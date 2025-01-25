@@ -31,7 +31,6 @@
     <Folder Include="Content\fonts\" />
     <Folder Include="Managers\" />
     <Folder Include="Core\" />
-    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Content\backgrounds\Menu.jpg">
