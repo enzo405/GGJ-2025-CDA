@@ -5,11 +5,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace Bloup.Scenes;
 
-public class MenuScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics) : SceneBase(spriteBatch, graphics)
+public class MenuScene(GraphicsDeviceManager graphics) : SceneBase(graphics)
 {
     protected override string name { get; set; } = "MenuScene";
 
@@ -17,12 +16,12 @@ public class MenuScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics) 
 
     private Texture2D background;
 
-    public override void Draw(GameTime gameTime)
+    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
-        _spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
+        spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
 
-        _spriteBatch.End();
+        spriteBatch.End();
     }
 
     public override void LoadContent(ContentManager content)

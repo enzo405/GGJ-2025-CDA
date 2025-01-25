@@ -11,7 +11,7 @@ public class SceneManager(GameStart game)
 
     private readonly GameStart _game = game;
 
-    private Dictionary<string, SceneBase> scenes;
+    private Dictionary<string, SceneBase> scenes = new Dictionary<string, SceneBase>();
 
     public static SceneManager Create(GameStart game)
     {

@@ -33,18 +33,21 @@ namespace Bloup
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            this.currentScene = new MenuScene(_spriteBatch, _graphics);
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            this.currentScene = new MenuScene(_graphics);
+
+            this.currentScene.LoadContent(Content);
 
             font = Content.Load<SpriteFont>("fonts/Font");
             
             // Scene
-            SceneManager.Create(this).Register(new MenuScene(_spriteBatch, _graphics));
+            SceneManager.Create(this).Register(new MenuScene(_graphics));
+            SceneManager.Create(this).Register(new LevelScene(_graphics));
 
             // TODO: use this.Content to load your game content here
         }
@@ -73,7 +76,7 @@ namespace Bloup
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // For use with SceneManager
-            this.currentScene.Draw(gameTime);
+            this.currentScene.Draw(gameTime, _spriteBatch);
 
 
             _spriteBatch.Begin();
