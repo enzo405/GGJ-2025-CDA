@@ -17,6 +17,9 @@ namespace Bloup
         private SceneBase currentScene;
         private SpriteFont font;
 
+        public int ScreenWidth = 1920;
+        public int ScreenHeight = 1080;
+
         public void changeCurrentScene(SceneBase scene)
         {
             this.currentScene = scene;
@@ -28,15 +31,25 @@ namespace Bloup
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            this.currentScene = new MenuScene(Content, _graphics);
+            this.currentScene = new MenuScene(Content, _graphics, this);
             SceneManager.Create(this);
-            SceneManager.Create(this).Register(new MenuScene(Content, _graphics));
-            SceneManager.Create(this).Register(new LevelScene(Content, _graphics));
+            SceneManager.Create(this).Register(new MenuScene(Content, _graphics, this));
+            SceneManager.Create(this).Register(new LevelScene(Content, _graphics, this));
         }
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            _graphics.IsFullScreen = true;
+
+            this.ScreenWidth = GraphicsDevice.DisplayMode.Width;
+            this.ScreenHeight = GraphicsDevice.DisplayMode.Height;
+
+            _graphics.PreferredBackBufferWidth = ScreenWidth;
+            _graphics.PreferredBackBufferHeight = ScreenHeight;
+
+            _graphics.ApplyChanges();
+
+            Debug.WriteLine($"Résolution en plein écran : {ScreenWidth}x{ScreenHeight}");
             base.Initialize();
         }
 
