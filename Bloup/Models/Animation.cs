@@ -1,0 +1,61 @@
+using Bloup.Entity;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+
+namespace Bloup.Models
+{
+    public class AnimatedEnnemy : Ennemy
+    {
+        private Rectangle[] _frames;
+        private int _currentFrame;
+        private float _frameTime;
+        private float _timeElapsed;
+        private bool _isLooping;
+
+        public bool IsFinished => !_isLooping && _currentFrame == _frames.Length - 1;
+        public Rectangle CurrentFrame => _frames[_currentFrame];
+
+        public AnimatedEnnemy(
+            Texture2D texture,
+            Vector2 position,
+            Rectangle rectangle,
+            float scale,
+            GraphicsDeviceManager graphics,
+            int frameWidth,
+            int frameHeight,
+            int frameCount,
+            float frameTime,
+            bool isLooping = true) : base(texture, position, rectangle, scale, graphics)
+        {
+            _frameTime = frameTime;
+            _isLooping = isLooping;
+            _frames = new Rectangle[frameCount];
+
+            for (int i = 0; i < frameCount; i++)
+            {
+                _frames[i] = new Rectangle(0, i * frameHeight, frameWidth, frameHeight);
+            }
+        }
+
+        public override void Update(GameTime gameTime, int screenHeight)
+        {
+            base.Update(gameTime, screenHeight);
+
+            _timeElapsed += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (_timeElapsed >= _frameTime)
+            {
+                _timeElapsed = 0;
+                if (_currentFrame + 1 < _frames.Length || _isLooping)
+                {
+                    _currentFrame = (_currentFrame + 1) % _frames.Length;
+                }
+            }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(_texture, _position, CurrentFrame, Color.White, 0f, Vector2.Zero, _scale,
+                SpriteEffects.None, 0f);
+        }
+    }
+}
