@@ -14,6 +14,8 @@ namespace Bloup.Entity
         protected float _speedY = 0f;       // Current vertical velocity
         private GraphicsDeviceManager _graphics;
 
+        public bool _isDestroyed = false;
+
         public Ennemy(Texture2D texture, Vector2 position, Rectangle rectangle, float scale, GraphicsDeviceManager graphics) : base(texture, position)
         {
             _position = position;
@@ -24,22 +26,18 @@ namespace Bloup.Entity
 
         public override void Update(GameTime gameTime, int screenHeight)
         {
-            Debug.WriteLine($"{_position.X} le rat");
+            if (_isDestroyed) return;
 
             base.Update(gameTime, screenHeight);
-
 
             _position.X -= _speedX;
 
             _rectangle.X = (int)_position.X;
-            _rectangle.Y = (int)_position.Y;
 
             if (_position.X < -100)
             {
-
+                _isDestroyed = true;
             }
-
-
         }
 
         public override void Draw(SpriteBatch spriteBatch)

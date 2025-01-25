@@ -3,9 +3,8 @@ using System.Diagnostics;
 using Bloup.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
-namespace Bloup.Core
+namespace Bloup.Entity
 {
     public class Rat : AnimatedEnnemy
     {

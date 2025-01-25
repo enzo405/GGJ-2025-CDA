@@ -1,10 +1,13 @@
 ﻿using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 using Bloup.Core;
 using Bloup.Entity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Bloup.Scenes;
 
@@ -17,7 +20,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
     public Rat? ennemyRat;
     public Screw? ennemyScrew;
 
-    public <List>
+    public List<Rat> rats = [];
 
     // Add all ressource
 
@@ -28,7 +31,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         spriteBatch.Begin();
         spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
         player?.Draw(spriteBatch);
-        ennemyRat?.Draw(spriteBatch);
+        foreach (var rat in rats)
+        {
+            rat.Draw(spriteBatch);
+        }
         ennemyScrew?.Draw(spriteBatch);
         spriteBatch.End();
     }
@@ -51,13 +57,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
             scale // Pass the scale factor
         );
 
-        ennemyRat = new Rat(
-            ennemyRatTexture,
-            new Vector2(700, 100), //SpawnPosition
-            new Rectangle(100, 100, ennemyRatTexture.Width, ennemyRatTexture.Height),// Hitbox using original size
-            scale, // Pass the scale factor
-            _graphics
-        );
+
+        AddRat();
 
         ennemyScrew = new Screw(
             ennemyScrewTexture,
@@ -78,7 +79,26 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
 
         int screenHeight = Graphics.PreferredBackBufferHeight;
         player?.Update(gameTime, screenHeight);
-        ennemyRat?.Update(gameTime, screenHeight);
+        foreach (var rat in rats.ToList())
+        {
+            rat.Update(gameTime, screenHeight);
+            if (rat._isDestroyed)
+            {
+                rats.Remove(rat);
+            }
+        }
+    }
 
+    public void AddRat()
+    {
+        Texture2D ennemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
+        float scale = 2f; // Change this value to scale your texture
+        rats.Add(new Rat(
+            ennemyRatTexture,
+            new Vector2(700, 100), //SpawnPosition
+            new Rectangle(100, 100, ennemyRatTexture.Width, ennemyRatTexture.Height),// Hitbox using original size
+            scale, // Pass the scale factor
+            _graphics
+        ));
     }
 }
