@@ -9,9 +9,9 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Bloup.Scenes;
 
-public class MenuScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics) : SceneBase(spriteBatch, graphics)
+public class LevelScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics) : SceneBase(spriteBatch, graphics)
 {
-    protected override string name { get; set; } = "MenuScene";
+    protected override string name { get; set; } = "LevelScene";
 
     // Add all ressource
 
@@ -20,9 +20,9 @@ public class MenuScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics) 
     public override void Draw(GameTime gameTime)
     {
         spriteBatch.Begin();
-        _spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
+        spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
 
-        _spriteBatch.End();
+        spriteBatch.End();
     }
 
     public override void LoadContent(ContentManager content)
@@ -35,7 +35,7 @@ public class MenuScene(SpriteBatch spriteBatch, GraphicsDeviceManager graphics) 
         if (Keyboard.GetState().IsKeyDown(Keys.A))
         {
             // rediger des log
-            Debug.WriteLine("Message de test");
+            Debug.WriteLine("t nul");
         }
     }
 }

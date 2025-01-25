@@ -9,6 +9,11 @@ public abstract class SceneBase(SpriteBatch spriteBatch, GraphicsDeviceManager g
     protected SpriteBatch _spriteBatch = spriteBatch;
     protected GraphicsDeviceManager _graphics = graphics;
 
+    public string GetName()
+    {
+        return this.name;
+    }
+
     public abstract void LoadContent(Microsoft.Xna.Framework.Content.ContentManager content);
 
     public abstract void Update(GameTime gameTime);

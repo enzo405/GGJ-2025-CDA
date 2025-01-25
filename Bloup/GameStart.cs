@@ -8,19 +8,21 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bloup
 {
-    public class Game1 : Game
+    public class GameStart : Game
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         // Add custom path
-        private SceneBase scene = new MenuScene();
-
+        private SceneBase currentScene;
         private SpriteFont font;
 
+        public void changeCurrentScene(SceneBase scene)
+        {
+            this.currentScene = scene;
+        }
 
-
-        public Game1()
+        public GameStart()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -31,7 +33,7 @@ namespace Bloup
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-
+            this.currentScene = new MenuScene(_spriteBatch, _graphics);
             base.Initialize();
         }
 
@@ -40,7 +42,9 @@ namespace Bloup
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             font = Content.Load<SpriteFont>("fonts/Font");
-            scene.LoadContent(Content);
+            
+            // Scene
+            SceneManager.Create(this).Register(new MenuScene(_spriteBatch, _graphics));
 
             // TODO: use this.Content to load your game content here
         }
@@ -48,7 +52,7 @@ namespace Bloup
         protected override void Update(GameTime gameTime)
         {
             // For use with SceneManager
-            this.scene.Update(gameTime);
+            this.currentScene.Update(gameTime);
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -69,7 +73,7 @@ namespace Bloup
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // For use with SceneManager
-            this.scene.Draw(gameTime, _spriteBatch);
+            this.currentScene.Draw(gameTime);
 
 
             _spriteBatch.Begin();
