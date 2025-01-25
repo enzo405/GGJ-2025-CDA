@@ -10,7 +10,7 @@ namespace Bloup.Scenes;
 
 public class MenuScene(GraphicsDeviceManager graphics) : SceneBase(graphics)
 {
-    protected override string name { get; set; } = "MenuScene";
+    protected override string Name { get; set; } = "MenuScene";
 
     // Add all ressource
 

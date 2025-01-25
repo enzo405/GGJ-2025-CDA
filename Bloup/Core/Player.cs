@@ -25,9 +25,9 @@ namespace Bloup.Core
             _scale = scale;
         }
 
-        public override void Update(GameTime gameTime, GameWindow window)
+        public override void Update(GameTime gameTime, int screenHeight)
         {
-            base.Update(gameTime, window);
+            base.Update(gameTime, screenHeight);
 
             KeyboardState state = Keyboard.GetState();
 
@@ -63,7 +63,7 @@ namespace Bloup.Core
             }
 
             // Prevent player from falling through the bottom of the screen
-            int groundPos = (int)(window.ClientBounds.Height - _rectangle.Height * _scale);
+            int groundPos = (int)(screenHeight - _rectangle.Height * _scale);
             if (_position.Y >= groundPos)
             {
                 _velocityY = 0;

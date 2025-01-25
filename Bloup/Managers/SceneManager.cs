@@ -15,10 +15,7 @@ public class SceneManager(GameStart game)
 
     public static SceneManager Create(GameStart game)
     {
-        if (_instance == null)
-        {
-            _instance = new SceneManager(game);
-        }
+        _instance ??= new SceneManager(game);
         return _instance;
     }
 
@@ -29,7 +26,7 @@ public class SceneManager(GameStart game)
 
     public void ChangeScene(string sceneName)
     {
-        this._game.changeCurrentScene(scenes[sceneName]);
+        _game.ChangeCurrentScene(scenes[sceneName]);
         Debug.WriteLine("Changing scene to ");
     }
 }

@@ -6,12 +6,12 @@ namespace Bloup.Core;
 
 public abstract class SceneBase(GraphicsDeviceManager graphics)
 {
-    protected abstract string name { get; set; }
+    protected abstract string Name { get; set; }
     protected GraphicsDeviceManager Graphics = graphics;
 
     public string GetName()
     {
-        return this.name;
+        return Name;
     }
 
     public abstract void LoadContent(ContentManager content);

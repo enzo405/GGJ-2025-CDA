@@ -15,7 +15,7 @@ namespace Bloup.Core
             _position = position;
         }
 
-        public virtual void Update(GameTime gameTime, GameWindow window)
+        public virtual void Update(GameTime gameTime, int screenHeight)
         {
             Debug.WriteLine("Sprite Update");
         }
