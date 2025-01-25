@@ -18,9 +18,9 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
     protected override string Name { get; set; } = "LevelScene";
     public Player? player;
     public Rat? ennemyRat;
-    public Screw? ennemyScrew;
 
     public List<Rat> rats = [];
+    public List<Screw> screws = [];
 
     // Add all ressource
 
@@ -31,11 +31,14 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         spriteBatch.Begin();
         spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
         player?.Draw(spriteBatch);
-        foreach (var rat in rats)
+        foreach (Rat rat in rats)
         {
             rat.Draw(spriteBatch);
         }
-        ennemyScrew?.Draw(spriteBatch);
+        foreach (Screw screw in screws)
+        {
+            screw.Draw(spriteBatch);
+        }
         spriteBatch.End();
     }
 
@@ -44,8 +47,6 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         background = _content.Load<Texture2D>("backgrounds/Menu");
         // Player
         Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble");
-        Texture2D ennemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
-        Texture2D ennemyScrewTexture = _content.Load<Texture2D>("sprites/screw");
         int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
         int spawnY = _graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
         float scale = 2f; // Change this value to scale your texture
@@ -58,15 +59,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         );
 
 
-        AddRat();
-
-        ennemyScrew = new Screw(
-            ennemyScrewTexture,
-            new Vector2(700, 300), //SpawnPosition
-            new Rectangle(100, 100, ennemyScrewTexture.Width, ennemyScrewTexture.Height),// Hitbox using original size
-            scale, // Pass the scale factor
-            _graphics
-        );
+        AddRats();
+        AddScrews();
     }
 
     public override void Update(GameTime gameTime)
@@ -79,7 +73,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
 
         int screenHeight = Graphics.PreferredBackBufferHeight;
         player?.Update(gameTime, screenHeight);
-        foreach (var rat in rats.ToList())
+        foreach (Rat rat in rats.ToList())
         {
             rat.Update(gameTime, screenHeight);
             if (rat._isDestroyed)
@@ -87,9 +81,17 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
                 rats.Remove(rat);
             }
         }
+        foreach (Screw screw in screws.ToList())
+        {
+            screw.Update(gameTime, screenHeight);
+            if (screw._isDestroyed)
+            {
+                screws.Remove(screw);
+            }
+        }
     }
 
-    public void AddRat()
+    public void AddRats()
     {
         Texture2D ennemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
         float scale = 2f; // Change this value to scale your texture
@@ -97,6 +99,19 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
             ennemyRatTexture,
             new Vector2(700, 100), //SpawnPosition
             new Rectangle(100, 100, ennemyRatTexture.Width, ennemyRatTexture.Height),// Hitbox using original size
+            scale, // Pass the scale factor
+            _graphics
+        ));
+    }
+
+    public void AddScrews()
+    {
+        Texture2D screwTexture = _content.Load<Texture2D>("sprites/screw");
+        float scale = 2f; // Change this value to scale your texture
+        screws.Add(new Screw(
+            screwTexture,
+            new Vector2(700, 100), //SpawnPosition
+            new Rectangle(100, 100, screwTexture.Width, screwTexture.Height),// Hitbox using original size
             scale, // Pass the scale factor
             _graphics
         ));
