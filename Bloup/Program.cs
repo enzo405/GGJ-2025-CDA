@@ -1,3 +1,3 @@
 ﻿
-using var game = new Bloup.Game1();
+using var game = new Bloup.GameStart();
 game.Run();
