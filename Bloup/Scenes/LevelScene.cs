@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Bloup.Core;
+using Bloup.Entity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +15,9 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
     protected override string Name { get; set; } = "LevelScene";
     public Player? player;
     public Rat? ennemyRat;
+    public Screw? ennemyScrew;
+
+    public <List>
 
     // Add all ressource
 
@@ -25,6 +29,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
         player?.Draw(spriteBatch);
         ennemyRat?.Draw(spriteBatch);
+        ennemyScrew?.Draw(spriteBatch);
         spriteBatch.End();
     }
 
@@ -34,6 +39,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         // Player
         Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble");
         Texture2D ennemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
+        Texture2D ennemyScrewTexture = _content.Load<Texture2D>("sprites/screw");
         int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
         int spawnY = _graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
         float scale = 2f; // Change this value to scale your texture
@@ -49,6 +55,14 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
             ennemyRatTexture,
             new Vector2(700, 100), //SpawnPosition
             new Rectangle(100, 100, ennemyRatTexture.Width, ennemyRatTexture.Height),// Hitbox using original size
+            scale, // Pass the scale factor
+            _graphics
+        );
+
+        ennemyScrew = new Screw(
+            ennemyScrewTexture,
+            new Vector2(700, 300), //SpawnPosition
+            new Rectangle(100, 100, ennemyScrewTexture.Width, ennemyScrewTexture.Height),// Hitbox using original size
             scale, // Pass the scale factor
             _graphics
         );

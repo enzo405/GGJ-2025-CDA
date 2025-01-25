@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Bloup.Core
+namespace Bloup.Entity
 {
     public class Ennemy : Sprite
     {
@@ -12,8 +12,6 @@ namespace Bloup.Core
         protected float _scale; // Scale factor for the texture
         protected float _speedX = 2f;      // Current horizontal velocity
         protected float _speedY = 0f;       // Current vertical velocity
-
-        private bool _movingRight = false;  // Direction du mouvement
         private GraphicsDeviceManager _graphics;
 
         public Ennemy(Texture2D texture, Vector2 position, Rectangle rectangle, float scale, GraphicsDeviceManager graphics) : base(texture, position)
@@ -30,32 +28,17 @@ namespace Bloup.Core
 
             base.Update(gameTime, screenHeight);
 
-            // Mouvement horizontal
-            if (_movingRight)
-            {
-                _position.X += _speedX;
-                Debug.WriteLine($"{_position.X} deplacement rat");
-                // Vérifie si le rat atteint le bord droit
-                if (_position.X + _rectangle.Width * _scale >= _graphics.PreferredBackBufferWidth)
-                {
-                    _movingRight = false;
-                }
-            }
-            else
-            {
-                _position.X -= _speedX;
-                Debug.WriteLine($"{_position.X} deplacement rat");
 
-                // Vérifie si le rat atteint le bord gauche
-                if (_position.X <= 0)
-                {
-                    _movingRight = true;
-                }
-            }
+            _position.X -= _speedX;
 
-            // Met à jour le rectangle de collision
             _rectangle.X = (int)_position.X;
             _rectangle.Y = (int)_position.Y;
+
+            if (_position.X < -100)
+            {
+
+            }
+
 
         }
 
