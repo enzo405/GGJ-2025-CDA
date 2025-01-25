@@ -14,7 +14,7 @@ public class MenuScene(ContentManager content, GraphicsDeviceManager graphics) :
 
     // Add all ressource
 
-    private Texture2D background;
+    private Texture2D? background;
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {

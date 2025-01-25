@@ -4,16 +4,10 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Bloup.Core
 {
-    public class Sprite
+    public abstract class Sprite(Texture2D texture, Vector2 position)
     {
-        public Texture2D _texture;
-        public Vector2 _position;
-
-        public Sprite(Texture2D texture, Vector2 position)
-        {
-            _texture = texture;
-            _position = position;
-        }
+        public Texture2D _texture = texture;
+        public Vector2 _position = position;
 
         public virtual void Update(GameTime gameTime, int screenHeight)
         {

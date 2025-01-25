@@ -10,12 +10,12 @@ namespace Bloup
 {
     public class GameStart : Game
     {
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
+        private readonly GraphicsDeviceManager? _graphics;
+        private SpriteBatch? _spriteBatch;
 
         // Add custom path
         private SceneBase currentScene;
-        private SpriteFont font;
+        private SpriteFont? font;
 
         public void ChangeCurrentScene(SceneBase scene)
         {
@@ -59,7 +59,6 @@ namespace Bloup
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                // rediger des log
                 SceneManager.Create(this).ChangeScene("LevelScene");
             }
 
@@ -73,11 +72,13 @@ namespace Bloup
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // For use with SceneManager
-            currentScene.Draw(gameTime, _spriteBatch);
-
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-            _spriteBatch.DrawString(font, "cc", new Vector2(100, 100), Color.Aqua);
-            _spriteBatch.End();
+            if (_spriteBatch is not null)
+            {
+                currentScene.Draw(gameTime, _spriteBatch);
+                _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                _spriteBatch.DrawString(font, "cc", new Vector2(100, 100), Color.Aqua);
+                _spriteBatch.End();
+            }
 
             // TODO: Add your drawing code here
 

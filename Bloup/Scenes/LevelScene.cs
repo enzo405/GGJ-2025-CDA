@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Bloup.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -10,6 +9,8 @@ namespace Bloup.Scenes;
 
 public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) : SceneBase(content, graphics)
 {
+    private readonly GraphicsDeviceManager _graphics = graphics;
+    private readonly ContentManager _content = content;
     protected override string Name { get; set; } = "LevelScene";
     public Player? player;
 
@@ -21,17 +22,17 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
     {
         spriteBatch.Begin();
         spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
-        player.Draw(spriteBatch);
+        player?.Draw(spriteBatch);
         spriteBatch.End();
     }
 
     public override void LoadContent()
     {
-        background = content.Load<Texture2D>("backgrounds/Menu");
+        background = _content.Load<Texture2D>("backgrounds/Menu");
         // Player
-        Texture2D playerTexture = content.Load<Texture2D>("sprites/bubble");
-        int spawnX = (int)(graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
-        int spawnY = graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
+        Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble");
+        int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
+        int spawnY = _graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
         float scale = 2f; // Change this value to scale your texture
 
         player = new Player(
@@ -51,6 +52,6 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         }
 
         int screenHeight = Graphics.PreferredBackBufferHeight;
-        player.Update(gameTime, screenHeight);
+        player?.Update(gameTime, screenHeight);
     }
 }
