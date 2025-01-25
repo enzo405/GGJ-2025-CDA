@@ -10,12 +10,12 @@ namespace Bloup
 {
     public class GameStart : Game
     {
-        private readonly GraphicsDeviceManager? _graphics;
-        private SpriteBatch? _spriteBatch;
+        private readonly GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
 
         // Add custom path
         private SceneBase currentScene;
-        private SpriteFont? font;
+        private SpriteFont font;
 
         public void ChangeCurrentScene(SceneBase scene)
         {

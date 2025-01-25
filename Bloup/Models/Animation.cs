@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Bloup.Models
 {
-    public class AnimatedEnnemy : Ennemy
+    public class AnimatedEnemy : Enemy
     {
         private Rectangle[] _frames;
         private int _currentFrame;
@@ -15,7 +15,7 @@ namespace Bloup.Models
         public bool IsFinished => !_isLooping && _currentFrame == _frames.Length - 1;
         public Rectangle CurrentFrame => _frames[_currentFrame];
 
-        public AnimatedEnnemy(
+        public AnimatedEnemy(
             Texture2D texture,
             Vector2 position,
             Rectangle rectangle,
@@ -25,7 +25,7 @@ namespace Bloup.Models
             int frameHeight,
             int frameCount,
             float frameTime,
-            bool isLooping = true) : base(texture, position, rectangle, scale, graphics)
+            bool isLooping = true) : base(texture, position, rectangle, scale)
         {
             _frameTime = frameTime;
             _isLooping = isLooping;

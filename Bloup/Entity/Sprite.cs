@@ -11,11 +11,11 @@ namespace Bloup.Entity
 
         public virtual void Update(GameTime gameTime, int screenHeight)
         {
-            // Debug.WriteLine("Sprite Update");
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+            Debug.WriteLine("Drawing sprite at position " + _position);
             spriteBatch.Draw(_texture, _position, Color.White);
         }
     }

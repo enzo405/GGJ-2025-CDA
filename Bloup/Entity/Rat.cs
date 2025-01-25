@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Bloup.Entity
 {
-    public class Rat : AnimatedEnnemy
+    public class Rat : AnimatedEnemy
     {
         private const int FRAME_WIDTH = 32;
         private const int FRAME_HEIGHT = 32;

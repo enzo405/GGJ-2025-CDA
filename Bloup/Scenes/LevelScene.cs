@@ -1,13 +1,10 @@
-﻿using System.Diagnostics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Bloup.Core;
 using Bloup.Entity;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace Bloup.Scenes;
 
@@ -16,21 +13,18 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
     private readonly GraphicsDeviceManager _graphics = graphics;
     private readonly ContentManager _content = content;
     protected override string Name { get; set; } = "LevelScene";
-    public Player? player;
-    public Rat? ennemyRat;
-
+    public Player player;
     public List<Rat> rats = [];
     public List<Screw> screws = [];
 
     // Add all ressource
-
-    private Texture2D? background;
+    private Texture2D background;
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
         spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
-        player?.Draw(spriteBatch);
+        player.Draw(spriteBatch);
         foreach (Rat rat in rats)
         {
             rat.Draw(spriteBatch);
@@ -53,11 +47,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
 
         player = new Player(
             playerTexture,
-            new Vector2(spawnX, spawnY), // Position
+            new Vector2(spawnX, spawnY), // SpawnPosition
             new Rectangle(spawnX, spawnY, playerTexture.Width, playerTexture.Height), // Hitbox using original size
             scale // Pass the scale factor
         );
-
 
         AddRats();
         AddScrews();
@@ -65,14 +58,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
 
     public override void Update(GameTime gameTime)
     {
-        if (Keyboard.GetState().IsKeyDown(Keys.A))
-        {
-            // rediger des log
-            // Debug.WriteLine("t nul");
-        }
-
         int screenHeight = Graphics.PreferredBackBufferHeight;
-        player?.Update(gameTime, screenHeight);
+        player.Update(gameTime, screenHeight);
         foreach (Rat rat in rats.ToList())
         {
             rat.Update(gameTime, screenHeight);
@@ -93,12 +80,12 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
 
     public void AddRats()
     {
-        Texture2D ennemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
+        Texture2D EnemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
         float scale = 2f; // Change this value to scale your texture
         rats.Add(new Rat(
-            ennemyRatTexture,
-            new Vector2(700, 100), //SpawnPosition
-            new Rectangle(100, 100, ennemyRatTexture.Width, ennemyRatTexture.Height),// Hitbox using original size
+            EnemyRatTexture,
+            new Vector2(700, 100), // SpawnPosition
+            new Rectangle(100, 100, EnemyRatTexture.Width, EnemyRatTexture.Height),// Hitbox using original size
             scale, // Pass the scale factor
             _graphics
         ));
@@ -112,8 +99,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
             screwTexture,
             new Vector2(700, 100), //SpawnPosition
             new Rectangle(100, 100, screwTexture.Width, screwTexture.Height),// Hitbox using original size
-            scale, // Pass the scale factor
-            _graphics
+            scale // Pass the scale factor
         ));
     }
 }
