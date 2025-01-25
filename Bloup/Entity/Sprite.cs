@@ -4,10 +4,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Bloup.Entity
 {
-    public abstract class Sprite(Texture2D texture, Vector2 position)
+    public abstract class Sprite(Texture2D texture, Vector2 position, float scale)
     {
         public Texture2D _texture = texture;
         public Vector2 _position = position;
+        protected float _scale = scale; // Scale factor for the texture
 
         public virtual void Update(GameTime gameTime, int screenHeight)
         {

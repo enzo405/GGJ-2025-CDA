@@ -5,10 +5,9 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bloup.Entity
 {
-    public class Player : Sprite
+    public class Player : AnimatedSprite
     {
         public Rectangle _rectangle;
-        protected float _scale; // Scale factor for the texture
         protected float _speed = 0.05f;
         protected float _gravity = 0.06f; // Reduced gravity for water
         protected float _propulsionForce = -6f; // Upward force when propelling
@@ -17,8 +16,10 @@ namespace Bloup.Entity
         protected bool _isPropelling = false;  // Whether the player is propelling up
         protected bool _isDescending = false;  // Whether the player is moving down
         protected float _dragFactor = 0.94f;    // Drag to simulate water resistance
+        protected bool _isDead = false;        // Whether the player is dead
 
-        public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale) : base(texture, position)
+        public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale)
+         : base(texture, position, 32, 32, 4, 0.3f, scale, false)
         {
             _position = position;
             _rectangle = rectangle;
@@ -27,6 +28,17 @@ namespace Bloup.Entity
 
         public override void Update(GameTime gameTime, int screenHeight)
         {
+            // If the player is dead and the animation has finished, stop updating
+            if (_isDead)
+            {
+                if (IsFinished)
+                {
+                    return;
+                }
+                base.Update(gameTime, screenHeight); // Update the animation
+                return;
+            }
+
             base.Update(gameTime, screenHeight);
 
             KeyboardState state = Keyboard.GetState();
@@ -69,30 +81,24 @@ namespace Bloup.Entity
                 _velocityY = 0;
                 _position.Y = groundPos;
             }
-
-            // Debug output
-            // Console.WriteLine($"Position: {_position.Y}, Velocity: {_velocityY}");
         }
 
         public void Propel()
         {
             // Apply upward force
             _velocityY = Math.Max(_propulsionForce, _velocityY + _propulsionForce);
-            // Console.WriteLine($"Propelling: {_velocityY}");
         }
 
         public void Descend()
         {
             // Apply downward force
             _velocityY = Math.Min(_downwardForce, _velocityY + _downwardForce);
-            // Console.WriteLine($"Descending: {_velocityY}");
         }
 
         public void ApplyGravity()
         {
             // Gradually pull the player down if not on the ground
             _velocityY += _gravity;
-            // Console.WriteLine($"Applying Gravity: {_velocityY}");
         }
 
         public void ApplyDrag()
@@ -107,10 +113,13 @@ namespace Bloup.Entity
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public void Die()
         {
-            // Draw the texture at the current position using the scale
-            spriteBatch.Draw(_texture, _position, null, Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 0f);
+            if (_isDead) return; // Prevent re-triggering death
+
+            _isDead = true;
+            _velocityY = 0;
+            Play();
         }
     }
 }

@@ -86,8 +86,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
             EnemyRatTexture,
             new Vector2(700, 100), // SpawnPosition
             new Rectangle(100, 100, EnemyRatTexture.Width, EnemyRatTexture.Height),// Hitbox using original size
-            scale, // Pass the scale factor
-            _graphics
+            scale // Pass the scale factor
         ));
     }
 

@@ -6,12 +6,11 @@ namespace Bloup.Entity
     public class Enemy : Sprite
     {
         public Rectangle _rectangle;
-        protected float _scale; // Scale factor for the texture
         protected float _speedX = 2f;      // Current horizontal velocity
         protected float _speedY = 0f;       // Current vertical velocity
         public bool _isDestroyed = false;
 
-        public Enemy(Texture2D texture, Vector2 position, Rectangle rectangle, float scale) : base(texture, position)
+        public Enemy(Texture2D texture, Vector2 position, Rectangle rectangle, float scale) : base(texture, position, scale)
         {
             _position = position;
             _rectangle = rectangle;
