@@ -8,14 +8,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bloup.Scenes;
 
-public class LevelScene(GraphicsDeviceManager graphics) : SceneBase(graphics)
+public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) : SceneBase(content, graphics)
 {
     protected override string Name { get; set; } = "LevelScene";
     public Player player;
 
     // Add all ressource
 
-    private Texture2D background;
+    private Texture2D? background;
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
@@ -25,7 +25,7 @@ public class LevelScene(GraphicsDeviceManager graphics) : SceneBase(graphics)
         spriteBatch.End();
     }
 
-    public override void LoadContent(ContentManager content)
+    public override void LoadContent()
     {
         background = content.Load<Texture2D>("backgrounds/Menu");
         // Player

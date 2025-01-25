@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bloup.Scenes;
 
-public class MenuScene(GraphicsDeviceManager graphics) : SceneBase(graphics)
+public class MenuScene(ContentManager content, GraphicsDeviceManager graphics) : SceneBase(content, graphics)
 {
     protected override string Name { get; set; } = "MenuScene";
 
@@ -24,9 +24,9 @@ public class MenuScene(GraphicsDeviceManager graphics) : SceneBase(graphics)
         spriteBatch.End();
     }
 
-    public override void LoadContent(ContentManager content)
+    public override void LoadContent()
     {
-        background = content.Load<Texture2D>("backgrounds/Menu");
+        background = this.Content.Load<Texture2D>("backgrounds/Menu");
     }
 
     public override void Update(GameTime gameTime)

@@ -39,15 +39,14 @@ namespace Bloup
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            currentScene = new MenuScene(_graphics);
-
-            currentScene.LoadContent(Content);
+            currentScene = new MenuScene(Content, _graphics);
+            currentScene.LoadContent();
 
             font = Content.Load<SpriteFont>("fonts/Font");
 
             // Scene
-            SceneManager.Create(this).Register(new MenuScene(_graphics));
-            SceneManager.Create(this).Register(new LevelScene(_graphics));
+            SceneManager.Create(this).Register(new MenuScene(Content, _graphics));
+            SceneManager.Create(this).Register(new LevelScene(Content, _graphics));
 
             // TODO: use this.Content to load your game content here
         }
@@ -63,7 +62,7 @@ namespace Bloup
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
                 // rediger des log
-                System.Console.WriteLine("cc");
+                SceneManager.Create(this).ChangeScene("LevelScene");
             }
 
             // TODO: Add your update logic here
@@ -77,7 +76,6 @@ namespace Bloup
 
             // For use with SceneManager
             currentScene.Draw(gameTime, _spriteBatch);
-
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             _spriteBatch.DrawString(font, "cc", new Vector2(100, 100), Color.Aqua);
