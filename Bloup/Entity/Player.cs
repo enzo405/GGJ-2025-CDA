@@ -71,28 +71,28 @@ namespace Bloup.Core
             }
 
             // Debug output
-            Console.WriteLine($"Position: {_position.Y}, Velocity: {_velocityY}");
+            // Console.WriteLine($"Position: {_position.Y}, Velocity: {_velocityY}");
         }
 
         public void Propel()
         {
             // Apply upward force
             _velocityY = Math.Max(_propulsionForce, _velocityY + _propulsionForce);
-            Console.WriteLine($"Propelling: {_velocityY}");
+            // Console.WriteLine($"Propelling: {_velocityY}");
         }
 
         public void Descend()
         {
             // Apply downward force
             _velocityY = Math.Min(_downwardForce, _velocityY + _downwardForce);
-            Console.WriteLine($"Descending: {_velocityY}");
+            // Console.WriteLine($"Descending: {_velocityY}");
         }
 
         public void ApplyGravity()
         {
             // Gradually pull the player down if not on the ground
             _velocityY += _gravity;
-            Console.WriteLine($"Applying Gravity: {_velocityY}");
+            // Console.WriteLine($"Applying Gravity: {_velocityY}");
         }
 
         public void ApplyDrag()

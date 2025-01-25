@@ -11,7 +11,7 @@ namespace Bloup.Core
 
         public virtual void Update(GameTime gameTime, int screenHeight)
         {
-            Debug.WriteLine("Sprite Update");
+            // Debug.WriteLine("Sprite Update");
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)

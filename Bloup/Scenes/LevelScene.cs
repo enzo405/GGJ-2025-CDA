@@ -13,6 +13,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
     private readonly ContentManager _content = content;
     protected override string Name { get; set; } = "LevelScene";
     public Player? player;
+    public Rat? ennemyRat;
 
     // Add all ressource
 
@@ -23,6 +24,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         spriteBatch.Begin();
         spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
         player?.Draw(spriteBatch);
+        ennemyRat?.Draw(spriteBatch);
         spriteBatch.End();
     }
 
@@ -31,6 +33,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         background = _content.Load<Texture2D>("backgrounds/Menu");
         // Player
         Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble");
+        Texture2D ennemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
         int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
         int spawnY = _graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
         float scale = 2f; // Change this value to scale your texture
@@ -41,6 +44,14 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
             new Rectangle(spawnX, spawnY, playerTexture.Width, playerTexture.Height), // Hitbox using original size
             scale // Pass the scale factor
         );
+
+        ennemyRat = new Rat(
+            ennemyRatTexture,
+            new Vector2(700, 100), //SpawnPosition
+            new Rectangle(100, 100, ennemyRatTexture.Width, ennemyRatTexture.Height),// Hitbox using original size
+            scale, // Pass the scale factor
+            _graphics
+        );
     }
 
     public override void Update(GameTime gameTime)
@@ -48,10 +59,12 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
         if (Keyboard.GetState().IsKeyDown(Keys.A))
         {
             // rediger des log
-            Debug.WriteLine("t nul");
+            // Debug.WriteLine("t nul");
         }
 
         int screenHeight = Graphics.PreferredBackBufferHeight;
         player?.Update(gameTime, screenHeight);
+        ennemyRat?.Update(gameTime, screenHeight);
+
     }
 }
