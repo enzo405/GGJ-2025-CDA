@@ -19,5 +19,10 @@ namespace Bloup.Core
         {
             Debug.WriteLine("Sprite Update");
         }
+
+        public virtual void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(_texture, _position, Color.White);
+        }
     }
 }

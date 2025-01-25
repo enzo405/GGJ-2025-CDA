@@ -18,10 +18,8 @@ namespace Bloup
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
 
-            // Set fullscreen and resolution
-            _graphics.IsFullScreen = true;
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            _graphics.PreferredBackBufferWidth = 800;
+            _graphics.PreferredBackBufferHeight = 400;
 
             Window.AllowUserResizing = false; // Resizing is unnecessary in fullscreen
             Window.AllowAltF4 = true;
@@ -41,10 +39,13 @@ namespace Bloup
             int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
             int spawnY = _graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
 
+            float scale = 2f; // Change this value to scale your texture
+
             player = new Player(
                 playerTexture,
                 new Vector2(spawnX, spawnY), // Position
-                new Rectangle(spawnX, spawnY, playerTexture.Width, playerTexture.Height) // Rectangle based on texture size
+                new Rectangle(spawnX, spawnY, playerTexture.Width, playerTexture.Height), // Hitbox using original size
+                scale // Pass the scale factor
             );
         }
 
@@ -64,7 +65,8 @@ namespace Bloup
 
             _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
-            _spriteBatch.Draw(player._texture, player._position, Color.Red);
+            // Call the Draw method of the player
+            player.Draw(_spriteBatch); // Use player.Draw to draw the player
 
             _spriteBatch.End();
             base.Draw(gameTime);

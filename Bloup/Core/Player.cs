@@ -1,5 +1,4 @@
 using System;
-using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,7 +7,8 @@ namespace Bloup.Core
 {
     public class Player : Sprite
     {
-        protected Rectangle _rectangle;
+        public Rectangle _rectangle;
+        protected float _scale; // Scale factor for the texture
         protected float _speed = 0.05f;
         protected float _gravity = 0.06f; // Reduced gravity for water
         protected float _propulsionForce = -6f; // Upward force when propelling
@@ -16,11 +16,13 @@ namespace Bloup.Core
         protected float _velocityY = 0f;       // Current vertical velocity
         protected bool _isPropelling = false;  // Whether the player is propelling up
         protected bool _isDescending = false;  // Whether the player is moving down
-        protected float _dragFactor = 0.95f;    // Drag to simulate water resistance
+        protected float _dragFactor = 0.94f;    // Drag to simulate water resistance
 
-        public Player(Texture2D texture, Vector2 position, Rectangle rectangle) : base(texture, position)
+        public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale) : base(texture, position)
         {
+            _position = position;
             _rectangle = rectangle;
+            _scale = scale;
         }
 
         public override void Update(GameTime gameTime, GameWindow window)
@@ -50,7 +52,7 @@ namespace Bloup.Core
             // Simulate water resistance to gradually stabilize the velocity
             ApplyDrag();
 
-            // Update the player's position
+            // Update player position
             _position.Y += _velocityY;
 
             // Prevent player from going off-screen (top of the screen)
@@ -61,7 +63,7 @@ namespace Bloup.Core
             }
 
             // Prevent player from falling through the bottom of the screen
-            int groundPos = window.ClientBounds.Height - _rectangle.Height;
+            int groundPos = (int)(window.ClientBounds.Height - _rectangle.Height * _scale);
             if (_position.Y >= groundPos)
             {
                 _velocityY = 0;
@@ -103,6 +105,12 @@ namespace Bloup.Core
             {
                 _velocityY = 0f;
             }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            // Draw the texture at the current position using the scale
+            spriteBatch.Draw(_texture, _position, null, Color.White, 0f, Vector2.Zero, _scale, SpriteEffects.None, 0f);
         }
     }
 }
