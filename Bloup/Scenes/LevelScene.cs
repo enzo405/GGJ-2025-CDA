@@ -11,7 +11,7 @@ namespace Bloup.Scenes;
 public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) : SceneBase(content, graphics)
 {
     protected override string Name { get; set; } = "LevelScene";
-    public Player player;
+    public Player? player;
 
     // Add all ressource
 
@@ -29,7 +29,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics) 
     {
         background = content.Load<Texture2D>("backgrounds/Menu");
         // Player
-        Texture2D playerTexture = content.Load<Texture2D>("bubble");
+        Texture2D playerTexture = content.Load<Texture2D>("sprites/bubble");
         int spawnX = (int)(graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
         int spawnY = graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
         float scale = 2f; // Change this value to scale your texture

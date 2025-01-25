@@ -26,6 +26,6 @@ public class SceneManager(GameStart game)
     public void ChangeScene(string sceneName)
     {
         _game.ChangeCurrentScene(scenes[sceneName]);
-        Debug.WriteLine("Changing scene to ");
+        Debug.WriteLine($"Changing scene to {sceneName}");
     }
 }

@@ -26,7 +26,7 @@ public class MenuScene(ContentManager content, GraphicsDeviceManager graphics) :
 
     public override void LoadContent()
     {
-        background = this.Content.Load<Texture2D>("backgrounds/Menu");
+        background = Content.Load<Texture2D>("backgrounds/Menu");
     }
 
     public override void Update(GameTime gameTime)

@@ -20,6 +20,7 @@ namespace Bloup
         public void ChangeCurrentScene(SceneBase scene)
         {
             currentScene = scene;
+            scene.LoadContent();
         }
 
         public GameStart()
@@ -27,7 +28,10 @@ namespace Bloup
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            currentScene = new MenuScene(Content, _graphics);
             SceneManager.Create(this);
+            SceneManager.Create(this).Register(new MenuScene(Content, _graphics));
+            SceneManager.Create(this).Register(new LevelScene(Content, _graphics));
         }
 
         protected override void Initialize()
@@ -39,14 +43,8 @@ namespace Bloup
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            currentScene = new MenuScene(Content, _graphics);
             currentScene.LoadContent();
-
             font = Content.Load<SpriteFont>("fonts/Font");
-
-            // Scene
-            SceneManager.Create(this).Register(new MenuScene(Content, _graphics));
-            SceneManager.Create(this).Register(new LevelScene(Content, _graphics));
 
             // TODO: use this.Content to load your game content here
         }
