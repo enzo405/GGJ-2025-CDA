@@ -21,16 +21,20 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public Player player;
     public List<Rat> rats = [];
     public List<Screw> screws = [];
+    public List<Wave> waves = [];
 
     // Cooldown settings
     private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(1);
     private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(2);
+    private TimeSpan waveSpawnCooldown = TimeSpan.FromSeconds(1);
     private TimeSpan elapsedRatTime = TimeSpan.Zero;
     private TimeSpan elapsedScrewTime = TimeSpan.Zero;
+    private TimeSpan eslapsedWaveTime = TimeSpan.Zero;
 
     // Spawn limits
     private const int MaxRats = 5;
     private const int MaxScrews = 3;
+    private const int MaxWaves = 5;
 
     // Add all resources
     private Texture2D tile;
@@ -60,6 +64,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
         AddRat();
         AddScrew();
+        AddWave();
     }
 
     public override void Update(GameTime gameTime)
@@ -88,6 +93,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
                 screws.Remove(screw);
             }
         }
+        foreach (Wave wave in waves.ToList())
+        {
+            wave.Update(gameTime, MaxHeight, MinHeight);
+        }
         elapsedRatTime += gameTime.ElapsedGameTime;
         if (elapsedRatTime >= ratSpawnCooldown && rats.Count < MaxRats)
         {
@@ -101,6 +110,14 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         {
             AddScrew();
             elapsedScrewTime = TimeSpan.Zero;
+        }
+
+        // Handle wave spawning
+        eslapsedWaveTime += gameTime.ElapsedGameTime;
+        if (eslapsedWaveTime >= waveSpawnCooldown && waves.Count < MaxWaves)
+        {
+            AddWave();
+            eslapsedWaveTime = TimeSpan.Zero;
         }
     }
 
@@ -161,6 +178,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         {
             screw.Draw(spriteBatch);
         }
+        foreach (Wave wave in waves)
+        {
+            wave.Draw(spriteBatch);
+        }
 
         spriteBatch.End();
     }
@@ -188,6 +209,16 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             new Vector2(SpawnXPositionsEntity, height),
             new Rectangle(SpawnXPositionsEntity, height, screwTexture.Width, screwTexture.Height),
             scale
+        ));
+    }
+
+    public void AddWave()
+    {
+        Texture2D waveTexture = _content.Load<Texture2D>("sprites/vagounette");
+        int height = GetRandomHeight();
+        waves.Add(new Wave(
+            waveTexture,
+            new Vector2(SpawnXPositionsEntity, height)
         ));
     }
 
