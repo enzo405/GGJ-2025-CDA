@@ -10,7 +10,7 @@ namespace Bloup.Entity
         public Vector2 _position = position;
         protected float _scale = scale; // Scale factor for the texture
 
-        public virtual void Update(GameTime gameTime, int screenHeight)
+        public virtual void Update(GameTime gameTime, int maxHeight, int minHeight)
         {
         }
 
@@ -18,6 +18,26 @@ namespace Bloup.Entity
         {
             Debug.WriteLine("Drawing sprite at position " + _position);
             spriteBatch.Draw(_texture, _position, Color.White);
+        }
+
+        public float GetBottomPosition()
+        {
+            return _position.Y + _texture.Height;
+        }
+
+        public float GetTopPosition()
+        {
+            return _position.Y;
+        }
+
+        public float GetLeftPosition()
+        {
+            return _position.X;
+        }
+
+        public float GetRightPosition()
+        {
+            return _position.X + _texture.Width * _scale;
         }
     }
 }

@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -5,33 +8,34 @@ namespace Bloup.Entity
 {
     public class AnimatedSprite : Sprite
     {
-        private Rectangle[] _frames;
+        private List<Rectangle> _frames;
         private int _currentFrame;
         private float _frameTime;
         private float _timeElapsed;
         private bool _isLooping;
         private bool _isPlaying;
-        public bool IsFinished => !_isLooping && _currentFrame == _frames.Length - 1;
+        public bool IsFinished => !_isLooping && _currentFrame == _frames.Count - 1;
         public Rectangle CurrentFrame => _frames[_currentFrame];
 
         public AnimatedSprite(
             Texture2D texture,
             Vector2 position,
-            int frameWidth,
-            int frameHeight,
-            int frameCount,
+            int frameSize,
             float frameTime,
             float scale,
-            bool isLooping = true) : base(texture, position, scale)
+            bool isLooping = false) : base(texture, position, scale)
         {
             _frameTime = frameTime;
             _isLooping = isLooping;
             _isPlaying = false;
-            _frames = new Rectangle[frameCount];
+            _frames = [];
 
-            for (int i = 0; i < frameCount; i++)
+            for (int x = 0; x < texture.Bounds.Width; x += frameSize)
             {
-                _frames[i] = new Rectangle(0, i * frameHeight, frameWidth, frameHeight);
+                for (int y = 0; y < texture.Bounds.Height; y += frameSize)
+                {
+                    _frames.Add(new Rectangle(x, y, frameSize, frameSize));
+                }
             }
         }
 
@@ -42,9 +46,9 @@ namespace Bloup.Entity
             _timeElapsed = 0;
         }
 
-        public override void Update(GameTime gameTime, int screenHeight)
+        public override void Update(GameTime gameTime, int maxHeight, int minHeight)
         {
-            base.Update(gameTime, screenHeight);
+            base.Update(gameTime, maxHeight, minHeight);
 
             if (_isPlaying)
             {
@@ -52,9 +56,9 @@ namespace Bloup.Entity
                 if (_timeElapsed >= _frameTime)
                 {
                     _timeElapsed = 0;
-                    if (_currentFrame + 1 < _frames.Length || _isLooping)
+                    if (_currentFrame + 1 < _frames.Count || _isLooping)
                     {
-                        _currentFrame = (_currentFrame + 1) % _frames.Length;
+                        _currentFrame = (_currentFrame + 1) % _frames.Count;
                     }
                     else
                     {

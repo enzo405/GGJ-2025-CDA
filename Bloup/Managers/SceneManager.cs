@@ -23,11 +23,6 @@ public class SceneManager(GameStart game)
 
     public void Register(SceneBase scene)
     {
-        if (scenes.ContainsKey(scene.GetName()))
-        {
-            Debug.WriteLine($"Scene {scene.GetName()} already exists");
-            return;
-        }
         scenes.Add(scene.GetName(), scene);
     }
 

@@ -12,19 +12,11 @@ namespace Bloup
     {
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-
-        // Add custom path
         private SceneBase currentScene;
         private SpriteFont font;
 
         public int ScreenWidth = 1920;
         public int ScreenHeight = 1080;
-
-        public void ChangeCurrentScene(SceneBase scene)
-        {
-            currentScene = scene;
-            scene.LoadContent();
-        }
 
         public GameStart()
         {
@@ -35,21 +27,21 @@ namespace Bloup
             SceneManager.Create(this);
             SceneManager.Create(this).Register(new MenuScene(Content, _graphics, this));
             SceneManager.Create(this).Register(new LevelScene(Content, _graphics, this));
+            SceneManager.Create(this).Register(new GameOverScene(Content, _graphics, this));
         }
 
         protected override void Initialize()
         {
             _graphics.IsFullScreen = true;
 
-            this.ScreenWidth = GraphicsDevice.DisplayMode.Width;
-            this.ScreenHeight = GraphicsDevice.DisplayMode.Height;
+            ScreenWidth = GraphicsDevice.DisplayMode.Width;
+            ScreenHeight = GraphicsDevice.DisplayMode.Height;
 
             _graphics.PreferredBackBufferWidth = ScreenWidth;
             _graphics.PreferredBackBufferHeight = ScreenHeight;
 
             _graphics.ApplyChanges();
 
-            Debug.WriteLine($"Résolution en plein écran : {ScreenWidth}x{ScreenHeight}");
             base.Initialize();
         }
 
@@ -58,8 +50,6 @@ namespace Bloup
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             currentScene.LoadContent();
             font = Content.Load<SpriteFont>("fonts/Font");
-
-            // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)
@@ -75,8 +65,6 @@ namespace Bloup
                 SceneManager.Create(this).ChangeScene("LevelScene");
             }
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -89,13 +77,22 @@ namespace Bloup
             {
                 currentScene.Draw(gameTime, _spriteBatch);
                 _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                _spriteBatch.DrawString(font, "cc", new Vector2(100, 100), Color.Aqua);
+                _spriteBatch.DrawString(font, gameTime.TotalGameTime.ToString(), new Vector2(10, 10), Color.White);
                 _spriteBatch.End();
             }
 
-            // TODO: Add your drawing code here
-
             base.Draw(gameTime);
+        }
+
+        public void ChangeCurrentScene(SceneBase scene)
+        {
+            if (currentScene.GetName() == scene.GetName())
+            {
+                Debug.WriteLine($"Scene {scene.GetName()} is already the current scene");
+                return;
+            }
+            currentScene = scene;
+            scene.LoadContent();
         }
     }
 }

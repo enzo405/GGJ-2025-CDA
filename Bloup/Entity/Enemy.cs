@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -17,13 +18,27 @@ namespace Bloup.Entity
             _scale = scale;
         }
 
-        public override void Update(GameTime gameTime, int screenHeight)
+        public override void Update(GameTime gameTime, int maxHeight, int minHeight)
         {
             if (_isDestroyed) return;
 
-            base.Update(gameTime, screenHeight);
+            base.Update(gameTime, maxHeight, minHeight);
 
-            _position.X -= _speedX;
+            float timeModifiedSpeedX = gameTime.TotalGameTime.TotalSeconds switch
+            {
+                <= 10 => _speedX * 1f,
+                <= 20 => _speedX * 1.1f,
+                <= 30 => _speedX * 1.2f,
+                <= 40 => _speedX * 1.3f,
+                <= 50 => _speedX * 1.4f,
+                <= 60 => _speedX * 1.5f,
+                <= 70 => _speedX * 1.6f,
+                <= 80 => _speedX * 1.7f,
+                <= 90 => _speedX * 1.8f,
+                _ => _speedX * 2f
+            };
+
+            _position.X -= timeModifiedSpeedX;
 
             _rectangle.X = (int)_position.X;
 
