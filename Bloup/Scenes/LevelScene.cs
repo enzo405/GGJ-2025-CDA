@@ -37,6 +37,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     protected int MaxHeight = game.ScreenHeight / 2 - 100;
     protected int MinHeight = game.ScreenHeight / 2 + 100;
+
+    protected int MaxWidth = game.ScreenWidth;
     protected int SpawnXPositionsEntity = (int)(game.ScreenWidth * 1.05f); // Spawn off screen
 
     public override void LoadContent()
@@ -52,7 +54,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             playerTexture,
             new Vector2(spawnX, spawnY), // SpawnPosition
             new Rectangle(spawnX, spawnY, playerTexture.Width, playerTexture.Height), // Hitbox using original size
-            scale // Pass the scale factor
+            scale, // Pass the scale factor
+            MaxWidth
         );
 
         AddRat();
