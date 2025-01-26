@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Diagnostics;
+using System.IO;
 
 namespace Bloup.Scenes;
 
@@ -112,6 +113,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
+        spriteBatch.Begin();
         int numberOfTilesX = 24;
         int numberOfTilesY = 10;
         int tileSize = 32;
@@ -120,10 +122,9 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         List<Texture2D> tiles = tileExtractorService.ExtractTiles(tile, tileSize, tileSize);
         MapLoader mapLoader = new();
 
-        Debug.WriteLine(game.Content.RootDirectory);
-        mapLoader.LoadMap("/tiles/tuyeau_set_bg.csv");
-
-        // mapLoader
+        string basePath = AppDomain.CurrentDomain.BaseDirectory;
+        string mapPath = Path.Combine(basePath, "Content/tiles/tuyeau_set_bg.csv");
+        mapLoader.LoadMap(mapPath);
 
         int width;
         int wMax = (int)Math.Floor((double)game.ScreenWidth / numberOfTilesX);
@@ -144,7 +145,6 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
                 int xpos = (width * x) + xPosStart;
 
                 float scaleX = width / tileSize;
-                Debug.WriteLine($"xpos : {xpos} ypos : {ypos} scaleX : {scaleX} size : {width}");
                 spriteBatch.Draw(texture: tiles[4],
                     position: new Vector2(xpos, ypos),
                     sourceRectangle: new Rectangle(0, 0, tileSize, tileSize),
