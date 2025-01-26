@@ -8,7 +8,7 @@ namespace Bloup.Services;
 public class MapLoader
 {
     // Dictionnaire pour stocker la carte : position (Vector2) = cle, valeur = ID de la tuile.
-    public Dictionary<Vector2, int> TileMap { get; private set; } = new();
+    public Dictionary<Vector2, int> TileMap { get; private set; } = [];
 
     // Méthode pour charger une carte à partir d'un fichier CSV.
     public void LoadMap(string filePath)

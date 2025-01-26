@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -26,7 +27,7 @@ namespace Bloup.Entity
             _scale = scale;
         }
 
-        public override void Update(GameTime gameTime, int screenHeight)
+        public override void Update(GameTime gameTime, int maxHeight, int minHeight)
         {
             // If the player is dead and the animation has finished, stop updating
             if (_isDead)
@@ -35,11 +36,11 @@ namespace Bloup.Entity
                 {
                     return;
                 }
-                base.Update(gameTime, screenHeight); // Update the animation
+                base.Update(gameTime, maxHeight, minHeight); // Update the animation
                 return;
             }
 
-            base.Update(gameTime, screenHeight);
+            base.Update(gameTime, maxHeight, minHeight);
 
             KeyboardState state = Keyboard.GetState();
 
@@ -68,18 +69,16 @@ namespace Bloup.Entity
             _position.Y += _velocityY;
 
             // Prevent player from going off-screen (top of the screen)
-            if (_position.Y < 0)
+            if (GetTopPosition() <= maxHeight)
             {
-                _position.Y = 0;
+                _position.Y = maxHeight;
                 _velocityY = 0;
             }
-
             // Prevent player from falling through the bottom of the screen
-            int groundPos = (int)(screenHeight - _rectangle.Height * _scale);
-            if (_position.Y >= groundPos)
+            if (GetBottomPosition() > minHeight)
             {
+                _position.Y = minHeight - _rectangle.Height;
                 _velocityY = 0;
-                _position.Y = groundPos;
             }
         }
 

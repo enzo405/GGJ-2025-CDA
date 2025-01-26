@@ -17,11 +17,11 @@ namespace Bloup.Entity
             _scale = scale;
         }
 
-        public override void Update(GameTime gameTime, int screenHeight)
+        public override void Update(GameTime gameTime, int maxHeight, int minHeight)
         {
             if (_isDestroyed) return;
 
-            base.Update(gameTime, screenHeight);
+            base.Update(gameTime, maxHeight, minHeight);
 
             _position.X -= _speedX;
 

@@ -42,9 +42,9 @@ namespace Bloup.Entity
             _timeElapsed = 0;
         }
 
-        public override void Update(GameTime gameTime, int screenHeight)
+        public override void Update(GameTime gameTime, int maxHeight, int minHeight)
         {
-            base.Update(gameTime, screenHeight);
+            base.Update(gameTime, maxHeight, minHeight);
 
             if (_isPlaying)
             {

@@ -21,10 +21,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     // Add all ressource
     private Texture2D background;
-
     private Texture2D square_yellow;
     private Texture2D square_red;
-
+    protected int MaxHeight;
+    protected int MinHeight;
 
     public override void LoadContent()
     {
@@ -51,11 +51,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     public override void Update(GameTime gameTime)
     {
-        int screenHeight = Graphics.PreferredBackBufferHeight;
-        player.Update(gameTime, screenHeight);
+        player.Update(gameTime, MaxHeight, MinHeight);
         foreach (Rat rat in rats.ToList())
         {
-            rat.Update(gameTime, screenHeight);
+            rat.Update(gameTime, MaxHeight, MinHeight);
             if (rat._isDestroyed)
             {
                 rats.Remove(rat);
@@ -63,7 +62,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         }
         foreach (Screw screw in screws.ToList())
         {
-            screw.Update(gameTime, screenHeight);
+            screw.Update(gameTime, MaxHeight, MinHeight);
             if (screw._isDestroyed)
             {
                 screws.Remove(screw);
@@ -71,11 +70,50 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         }
     }
 
-
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
+        int numberOfTilesX = 24;
+        int numberOfTilesY = 10;
+
         spriteBatch.Begin();
-        spriteBatch.Draw(background, new Vector2(0, 0), Color.Aqua);
+        int tileSize;
+        int wMax = (int)Math.Floor((double)game.ScreenWidth / numberOfTilesX);
+        int hMax = (int)Math.Floor((double)game.ScreenHeight / numberOfTilesY);
+        if (wMax > hMax)
+        {
+            tileSize = hMax;
+        }
+        else
+        {
+            tileSize = wMax;
+        }
+        int xPosStart = (game.ScreenWidth - (tileSize * numberOfTilesX)) / 2;
+        int yPosStart = (game.ScreenHeight - (tileSize * numberOfTilesY)) / 2;
+
+        MaxHeight = yPosStart;
+        MinHeight = yPosStart + (numberOfTilesY * tileSize);
+
+        for (int y = 0; y < numberOfTilesY; y++)
+        {
+            int ypos = (tileSize * y) + yPosStart;
+            for (int x = 0; x < numberOfTilesX; x++)
+            {
+                int xpos = (tileSize * x) + xPosStart;
+                if (y % 2 == 0 && x % 2 == 0)
+                {
+                    spriteBatch.Draw(square_red, new Vector2(xpos, ypos), new Rectangle(0, 0, tileSize, tileSize), Color.Black);
+                }
+                else if (y % 2 != 0 && x % 2 != 0)
+                {
+                    spriteBatch.Draw(square_yellow, new Vector2(xpos, ypos), new Rectangle(0, 0, tileSize, tileSize), Color.Black);
+                }
+                else
+                {
+                    spriteBatch.Draw(square_yellow, new Vector2(xpos, ypos), new Rectangle(0, 0, tileSize, tileSize), Color.Azure);
+                }
+            }
+        }
+
         player.Draw(spriteBatch);
         foreach (Rat rat in rats)
         {
@@ -86,52 +124,17 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             screw.Draw(spriteBatch);
         }
 
-        int width = 0;
-        int wMax = (int)Math.Floor((double)game.ScreenWidth / 24);
-        int hMax = (int)Math.Floor((double)game.ScreenHeight / 10);
-        if (wMax > hMax)
-        {
-            width = hMax;
-        }
-        else
-        {
-            width = wMax;
-        }
-        int xPosStart = (game.ScreenWidth - (width * 24)) / 2;
-        int yPosStart = (game.ScreenHeight - (width * 10)) / 2; ;
-        Debug.WriteLine($"width : {width} xPosStart : {xPosStart} yPosStart : {yPosStart}");
-        for (int y = 0; y < 10; y++)
-        {
-            int ypos = (width * y) + yPosStart;
-            for (int x = 0; x < 24; x++)
-            {
-                int xpos = (width * x) + xPosStart;
-                if (y % 2 == 0 && x % 2 == 0)
-                {
-                    spriteBatch.Draw(square_red, new Vector2(xpos, ypos), new Rectangle(0, 0, width, width), Color.Black);
-                }
-                else if (y % 2 != 0 && x % 2 != 0)
-                {
-                    spriteBatch.Draw(square_yellow, new Vector2(xpos, ypos), new Rectangle(0, 0, width, width), Color.Black);
-                }
-                else
-                {
-                    spriteBatch.Draw(square_yellow, new Vector2(xpos, ypos), new Rectangle(0, 0, width, width), Color.Azure);
-                }
-            }
-        }
-
         spriteBatch.End();
     }
 
     public void AddRats()
     {
-        Texture2D EnemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
+        Texture2D enemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
         float scale = 2f; // Change this value to scale your texture
         rats.Add(new Rat(
-            EnemyRatTexture,
+            enemyRatTexture,
             new Vector2(700, 100), // SpawnPosition
-            new Rectangle(100, 100, EnemyRatTexture.Width, EnemyRatTexture.Height),// Hitbox using original size
+            new Rectangle(100, 100, enemyRatTexture.Width, enemyRatTexture.Height),// Hitbox using original size
             scale // Pass the scale factor
         ));
     }
