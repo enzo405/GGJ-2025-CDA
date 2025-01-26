@@ -120,5 +120,18 @@ namespace Bloup.Entity
             _velocityY = 0;
             Play();
         }
+
+        public bool CheckCollision(Enemy entity)
+        {
+            if (_position.X < entity._position.X + entity._rectangle.Width &&
+                _position.X + _rectangle.Width > entity._position.X &&
+                _position.Y < entity._position.Y + entity._rectangle.Height &&
+                _position.Y + _rectangle.Height > entity._position.Y)
+            {
+                Die();
+                if (IsFinished) return true;
+            }
+            return false;
+        }
     }
 }

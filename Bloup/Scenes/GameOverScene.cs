@@ -1,16 +1,13 @@
-﻿using System;
-using System.Diagnostics;
-using Bloup.Core;
+﻿using Bloup.Core;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace Bloup.Scenes;
 
-public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, GameStart game) : SceneBase(content, graphics, game)
+public class GameOverScene(ContentManager content, GraphicsDeviceManager graphics, GameStart game) : SceneBase(content, graphics, game)
 {
-    protected override string Name { get; set; } = "MenuScene";
+    protected override string Name { get; set; } = "GameOverScene";
 
     // Add all ressource
 

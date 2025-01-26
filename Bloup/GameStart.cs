@@ -27,6 +27,7 @@ namespace Bloup
             SceneManager.Create(this);
             SceneManager.Create(this).Register(new MenuScene(Content, _graphics, this));
             SceneManager.Create(this).Register(new LevelScene(Content, _graphics, this));
+            SceneManager.Create(this).Register(new GameOverScene(Content, _graphics, this));
         }
 
         protected override void Initialize()
