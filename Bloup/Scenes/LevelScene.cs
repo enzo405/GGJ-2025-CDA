@@ -20,6 +20,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     private readonly ContentManager _content = content;
     private readonly Random random = new();
     protected override string Name { get; set; } = "LevelScene";
+    protected TimeSpan Timer { get; set; } = TimeSpan.Zero;
     public Player player;
     public List<Rat> rats = [];
     public List<Screw> screws = [];
@@ -53,11 +54,13 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     protected int pointeur = 0;
     protected float elapsedFrameTime;
+    private SpriteFont font;
 
     public override void LoadContent()
     {
         tile = _content.Load<Texture2D>("asset_tuyeau");
         music = _content.Load<Song>("bubble");
+        font = Content.Load<SpriteFont>("fonts/Font");
         MediaPlayer.Play(music);
         MediaPlayer.IsRepeating = true;
 
@@ -88,6 +91,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             GameOver();
         }
 
+        Timer += gameTime.ElapsedGameTime;
         player.Update(gameTime, (int)MaxHeight, (int)MinHeight);
         foreach (Rat rat in rats.ToList())
         {
@@ -225,6 +229,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         }
 
         player.Draw(spriteBatch);
+        spriteBatch.DrawString(font, $"Timer: {Timer.Minutes}:{Timer.Seconds}", new Vector2(10, 10), Color.White);
+
         foreach (Rat rat in rats)
         {
             rat.Draw(spriteBatch);
@@ -302,6 +308,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     public void GameOver()
     {
+        Timer = TimeSpan.Zero;
         MediaPlayer.Stop();
         MediaPlayer.Pause();
         rats.Clear();
