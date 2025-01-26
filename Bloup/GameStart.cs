@@ -70,14 +70,14 @@ namespace Bloup
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // For use with SceneManager
             if (_spriteBatch is not null)
             {
                 currentScene.Draw(gameTime, _spriteBatch);
                 _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                _spriteBatch.DrawString(font, gameTime.TotalGameTime.ToString(), new Vector2(10, 10), Color.White);
+                _spriteBatch.DrawString(font, $"Timer: {gameTime.TotalGameTime.Minutes}:{gameTime.TotalGameTime.Seconds}", new Vector2(10, 10), Color.White);
                 _spriteBatch.End();
             }
 
@@ -88,7 +88,6 @@ namespace Bloup
         {
             if (currentScene.GetName() == scene.GetName())
             {
-                Debug.WriteLine($"Scene {scene.GetName()} is already the current scene");
                 return;
             }
             currentScene = scene;
