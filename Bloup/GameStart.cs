@@ -77,7 +77,6 @@ namespace Bloup
             {
                 currentScene.Draw(gameTime, _spriteBatch);
                 _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                _spriteBatch.DrawString(font, "cc", new Vector2(100, 100), Color.Aqua);
                 _spriteBatch.End();
             }
 

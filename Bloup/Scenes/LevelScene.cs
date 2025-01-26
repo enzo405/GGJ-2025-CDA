@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Diagnostics;
 
 namespace Bloup.Scenes;
 
@@ -13,12 +14,23 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 {
     private readonly GraphicsDeviceManager _graphics = graphics;
     private readonly ContentManager _content = content;
+    private readonly Random random = new();
     protected override string Name { get; set; } = "LevelScene";
     public Player player;
-    public List<Rat> rats = [];
-    public List<Screw> screws = [];
+    public List<Rat> rats = new();
+    public List<Screw> screws = new();
 
-    // Add all ressource
+    // Cooldown settings
+    private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(2);
+    private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(3);
+    private TimeSpan elapsedRatTime = TimeSpan.Zero;
+    private TimeSpan elapsedScrewTime = TimeSpan.Zero;
+
+    // Spawn limits
+    private const int MaxRats = 5;
+    private const int MaxScrews = 3;
+
+    // Add all resources
     private Texture2D background;
     private Texture2D square_yellow;
     private Texture2D square_red;
@@ -31,11 +43,12 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         square_yellow = _content.Load<Texture2D>("backgrounds/yellow_square");
         square_red = _content.Load<Texture2D>("backgrounds/red_square");
         background = _content.Load<Texture2D>("backgrounds/Menu");
-        // Player
+
+        // Player setup
         Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble");
         int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
         int spawnY = _graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
-        float scale = 2f; // Change this value to scale your texture
+        float scale = 2f;
 
         player = new Player(
             playerTexture,
@@ -48,10 +61,11 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         AddScrew();
     }
 
-
     public override void Update(GameTime gameTime)
     {
         player.Update(gameTime, MaxHeight, MinHeight);
+
+        // Update existing rats
         foreach (Rat rat in rats.ToList())
         {
             rat.Update(gameTime, MaxHeight, MinHeight);
@@ -60,6 +74,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
                 rats.Remove(rat);
             }
         }
+
+        // Update existing screws
         foreach (Screw screw in screws.ToList())
         {
             screw.Update(gameTime, MaxHeight, MinHeight);
@@ -67,6 +83,22 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             {
                 screws.Remove(screw);
             }
+        }
+
+        // Handle rat spawning
+        elapsedRatTime += gameTime.ElapsedGameTime;
+        if (elapsedRatTime >= ratSpawnCooldown && rats.Count < MaxRats)
+        {
+            AddRat();
+            elapsedRatTime = TimeSpan.Zero;
+        }
+
+        // Handle screw spawning
+        elapsedScrewTime += gameTime.ElapsedGameTime;
+        if (elapsedScrewTime >= screwSpawnCooldown && screws.Count < MaxScrews)
+        {
+            AddScrew();
+            elapsedScrewTime = TimeSpan.Zero;
         }
     }
 
@@ -79,14 +111,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         int tileSize;
         int wMax = (int)Math.Floor((double)game.ScreenWidth / numberOfTilesX);
         int hMax = (int)Math.Floor((double)game.ScreenHeight / numberOfTilesY);
-        if (wMax > hMax)
-        {
-            tileSize = hMax;
-        }
-        else
-        {
-            tileSize = wMax;
-        }
+        tileSize = Math.Min(wMax, hMax);
+
         int xPosStart = (game.ScreenWidth - (tileSize * numberOfTilesX)) / 2;
         int yPosStart = (game.ScreenHeight - (tileSize * numberOfTilesY)) / 2;
 
@@ -130,30 +156,31 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public void AddRat()
     {
         Texture2D enemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
-        float scale = 2f; // Change this value to scale your texture
+        float scale = (float)random.NextDouble() * 3 + 1;
         rats.Add(new Rat(
             enemyRatTexture,
-            new Vector2(SpawnXPositionsEntity, GetRandomHeight()), // SpawnPosition
-            new Rectangle(100, 100, enemyRatTexture.Width, enemyRatTexture.Height),// Hitbox using original size
-            scale // Pass the scale factor
+            new Vector2(SpawnXPositionsEntity, GetRandomHeight()),
+            new Rectangle(100, 100, enemyRatTexture.Width, enemyRatTexture.Height),
+            scale
         ));
     }
 
     public void AddScrew()
     {
         Texture2D screwTexture = _content.Load<Texture2D>("sprites/screw");
-        float scale = 2f; // Change this value to scale your texture
+        float scale = (float)random.NextDouble() * 1.5f + 1;
         screws.Add(new Screw(
             screwTexture,
-            new Vector2(SpawnXPositionsEntity, GetRandomHeight()), //SpawnPosition
-            new Rectangle(100, 100, screwTexture.Width, screwTexture.Height),// Hitbox using original size
-            scale // Pass the scale factor
+            new Vector2(SpawnXPositionsEntity, GetRandomHeight()),
+            new Rectangle(100, 100, screwTexture.Width, screwTexture.Height),
+            scale
         ));
     }
 
     public int GetRandomHeight()
     {
-        Random random = new();
-        return random.Next(MaxHeight, MinHeight);
+        int randomHeight = random.Next(MaxHeight, MinHeight);
+        Debug.WriteLine($"MaxHeight: {MaxHeight}, MinHeight: {MinHeight}, RandomHeight: {randomHeight}");
+        return randomHeight;
     }
 }
