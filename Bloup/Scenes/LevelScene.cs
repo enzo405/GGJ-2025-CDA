@@ -28,19 +28,19 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public List<Shit> shits = [];
 
     // Cooldown settings
-    private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(1);
-    private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(2);
+    private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(3);
+    private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(3);
     private TimeSpan waveSpawnCooldown = TimeSpan.FromSeconds(1);
+    private TimeSpan shitSpawnCooldown = TimeSpan.FromSeconds(3);
     private TimeSpan elapsedRatTime = TimeSpan.Zero;
     private TimeSpan elapsedScrewTime = TimeSpan.Zero;
     private TimeSpan eslapsedWaveTime = TimeSpan.Zero;
-    private TimeSpan shitSpawnCooldown = TimeSpan.FromSeconds(3);
     private TimeSpan elapsedShitTime = TimeSpan.Zero;
 
     // Spawn limits
     private const int MaxRats = 5;
     private const int MaxScrews = 3;
-    private const int MaxWaves = 5;
+    private const int MaxWaves = 12;
     private const int MaxShits = 3;
 
     // Add all resources
@@ -283,7 +283,9 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         int height = GetRandomHeight();
         waves.Add(new Wave(
             waveTexture,
-            new Vector2(SpawnXPositionsEntity, height)
+            new Vector2(SpawnXPositionsEntity, height),
+            new Rectangle(SpawnXPositionsEntity, height, waveTexture.Width, waveTexture.Height),
+            2f
         ));
     }
 

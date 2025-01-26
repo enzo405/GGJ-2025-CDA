@@ -16,7 +16,6 @@ public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, G
     // Add all ressource
     private Texture2D background;
     private Texture2D startButton;
-
     private Rectangle startButtonRect;
     private Rectangle exitButtonRect;
     private Texture2D exitButton;
