@@ -3,12 +3,15 @@ using System.Linq;
 using Bloup.Core;
 using Bloup.Entity;
 using System;
+using System.Diagnostics;
 using Bloup.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
+using System.Threading;
 using Bloup.Managers;
+using MonoGame.Extended;
 
 namespace Bloup.Scenes;
 
@@ -35,9 +38,12 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     // Add all resources
     private Texture2D tile;
 
-    protected int MaxHeight = game.ScreenHeight / 2 - 100;
-    protected int MinHeight = game.ScreenHeight / 2 + 100;
+    protected float MaxHeight = game.ScreenHeight / 2 - 100;
+    protected float MinHeight = game.ScreenHeight / 2 + 100;
     protected int SpawnXPositionsEntity = (int)(game.ScreenWidth * 1.05f); // Spawn off screen
+
+    protected int pointeur = 0;
+    protected float elapsedFrameTime;
 
     public override void LoadContent()
     {
@@ -66,10 +72,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             GameOver();
         }
 
-        player.Update(gameTime, MaxHeight, MinHeight);
+        player.Update(gameTime, (int)MaxHeight, (int)MinHeight);
         foreach (Rat rat in rats.ToList())
         {
-            rat.Update(gameTime, MaxHeight, MinHeight);
+            rat.Update(gameTime, (int)MaxHeight, (int)MinHeight);
             player.CheckCollision(rat);
             if (rat._isDestroyed)
             {
@@ -78,7 +84,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         }
         foreach (Screw screw in screws.ToList())
         {
-            screw.Update(gameTime, MaxHeight, MinHeight);
+            screw.Update(gameTime, (int)MaxHeight, (int)MinHeight);
             player.CheckCollision(screw);
             if (screw._isDestroyed)
             {
@@ -99,6 +105,23 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             AddScrew();
             elapsedScrewTime = TimeSpan.Zero;
         }
+
+        elapsedFrameTime += gameTime.GetElapsedSeconds(); // Ajout du temps écoulé à chaque frame
+        if (elapsedFrameTime >= 0.5f) // Vérifie si une seconde s'est écoulée
+        {
+            elapsedFrameTime -= 0.5f; // Réinitialise le compteur d'une seconde
+
+            // Met à jour le pointeur
+            if (pointeur > 9)
+            {
+                pointeur = 0; // Réinitialise le pointeur
+            }
+            else
+            {
+                pointeur++; // Incrémente le pointeur
+            }
+        }
+
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -120,32 +143,40 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         int hMax = (int)Math.Floor((double)game.ScreenHeight / numberOfTilesY);
         int width = wMax > hMax ? hMax : wMax;
 
-        int xPosStart = (game.ScreenWidth - (width * numberOfTilesX)) / 2;
-        int yPosStart = (game.ScreenHeight - (width * numberOfTilesY)) / 2;
+        float scaleX = width / tileSize;
+        float xPosStart = (game.ScreenWidth - (tileSize * scaleX * numberOfTilesX)) / 2;
+        float yPosStart = (game.ScreenHeight - (tileSize * scaleX * numberOfTilesY)) / 2;
 
         MaxHeight = yPosStart;
-        MinHeight = yPosStart + (numberOfTilesY * width);
+        MinHeight = yPosStart + (tileSize * scaleX *numberOfTilesY);
 
         spriteBatch.Begin();
 
         for (int y = 0; y < numberOfTilesY; y++)
         {
-            int ypos = (width * y) + yPosStart;
+            float ypos = (y * tileSize * scaleX) + yPosStart;
+            
             for (int x = 0; x < numberOfTilesX; x++)
             {
-                int xpos = (width * x) + xPosStart;
-                float scaleX = width / tileSize;
-                int idTitle = mapLoader.TileMap[new Vector2(x, y)];
+                int rx = x + pointeur;
 
+                if (rx >= numberOfTilesX)
+                {
+                    rx -= numberOfTilesX;
+                }
+
+                float xpos = (x * tileSize * scaleX) + xPosStart;
+                int idTitle = mapLoader.TileMap[new Vector2(rx, y)];
                 spriteBatch.Draw(texture: tiles[idTitle],
                     position: new Vector2(xpos, ypos),
-                    sourceRectangle: new Rectangle(0, 0, width, width),
+                    sourceRectangle: new Rectangle(0, 0, tileSize, tileSize),
                     color: Color.White,
                     rotation: 0,
-                    origin: Vector2.One,
+                    origin: Vector2.Zero,
                     scale: new Vector2(scaleX, scaleX),
                     effects: SpriteEffects.None,
-                    layerDepth: 0f);
+                    layerDepth: 0f
+                    );
             }
         }
 
@@ -165,7 +196,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public void AddRat()
     {
         Texture2D enemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
-        float scale = (float)random.NextDouble() * 3 + 1;
+        float scale = (float)random.NextDouble() * 5 + 1;
         int height = GetRandomHeight();
         rats.Add(new Rat(
             enemyRatTexture,
@@ -190,7 +221,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     public int GetRandomHeight()
     {
-        int randomHeight = random.Next(MaxHeight, MinHeight);
+        int randomHeight = random.Next((int)MaxHeight + 60, (int)MinHeight - 60);
         return randomHeight;
     }
 
