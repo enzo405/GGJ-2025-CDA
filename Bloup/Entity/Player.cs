@@ -26,6 +26,11 @@ namespace Bloup.Entity
         protected float _waterFlowFactor = 0.2f; // Water flow factor
         protected int _maxWidth = 1200;
         protected bool _isDead = false;        // Whether the player is dead
+        private Texture2D _fishTexture;    // Texture pour le poisson
+        private int _fishFrameHeight;      // Hauteur d'une frame (calcule à partir de la texture)
+        private int _fishFrameIndex = 0;   // Frame actuelle de l'animation du poisson
+        private float _fishAnimationSpeed = 0.2f; // Vitesse d'animation (en secondes)
+        private float _fishElapsedTime = 0f;      // Temps écoulé depuis la dernière frame
 
         public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale, int maxWidth)
          : base(texture, position, 32, 0.2f, scale, false)
@@ -35,6 +40,48 @@ namespace Bloup.Entity
             _scale = scale;
             _maxWidth = maxWidth;
         }
+
+        public void SetFishTexture(Texture2D fishTexture)
+        {
+            _fishTexture = fishTexture;
+            _fishFrameHeight = fishTexture.Height / 4; // Divise la hauteur de la texture par le nombre de frames (4 frames)
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            base.Draw(spriteBatch);
+
+            if (_fishTexture != null)
+            {
+                // Calculer la position du poisson au centre de la bulle
+                Vector2 fishPosition = new Vector2(
+                    _position.X ,
+                    _position.Y
+                );
+
+                // Définir le rectangle source pour afficher la bonne frame du poisson
+                Rectangle fishSourceRect = new Rectangle(
+                    0,
+                    _fishFrameIndex * _fishFrameHeight, // Frame actuelle
+                    _fishTexture.Width,
+                    _fishFrameHeight
+                );
+
+                // Dessiner le poisson
+                spriteBatch.Draw(
+                    _fishTexture,
+                    fishPosition,
+                    fishSourceRect,
+                    Color.White,
+                    0f,
+                    Vector2.Zero,
+                    _scale, // Utiliser le même facteur de mise à l'échelle que la bulle
+                    SpriteEffects.None,
+                    0f
+                );
+            }
+        }
+
 
         public override void Update(GameTime gameTime, int maxHeight, int minHeight)
         {
@@ -47,6 +94,17 @@ namespace Bloup.Entity
                 }
                 base.Update(gameTime, maxHeight, minHeight); // Update the animation
                 return;
+            }
+
+            if (_fishTexture != null)
+            {
+                _fishElapsedTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (_fishElapsedTime >= _fishAnimationSpeed)
+                {
+                    _fishFrameIndex = (_fishFrameIndex + 1) % 4; // Passe à la frame suivante (4 frames au total)
+                    _fishElapsedTime = 0f;
+                }
             }
 
             base.Update(gameTime, maxHeight, minHeight);

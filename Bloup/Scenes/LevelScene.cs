@@ -55,6 +55,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         tile = _content.Load<Texture2D>("asset_tuyeau");
         // Player setup
         Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble-animation");
+        Texture2D fishTexture = _content.Load<Texture2D>("sprites/swimming_fish_animation");
         int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
         int spawnY = _graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
         float scale = 2f;
@@ -66,6 +67,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             scale, // Pass the scale factor
             MaxWidth
         );
+
+        player.SetFishTexture(fishTexture);
 
         AddRat();
         AddScrew();
