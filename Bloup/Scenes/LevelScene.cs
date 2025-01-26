@@ -21,16 +21,20 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public Player player;
     public List<Rat> rats = [];
     public List<Screw> screws = [];
+    public List<Shit> shits = [];
 
     // Cooldown settings
     private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(1);
     private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(2);
+    private TimeSpan shitSpawnCooldown = TimeSpan.FromSeconds(3);
     private TimeSpan elapsedRatTime = TimeSpan.Zero;
     private TimeSpan elapsedScrewTime = TimeSpan.Zero;
+    private TimeSpan elapsedShitTime = TimeSpan.Zero;
 
     // Spawn limits
     private const int MaxRats = 5;
     private const int MaxScrews = 3;
+    private const int MaxShits = 3;
 
     // Add all resources
     private Texture2D tile;
@@ -60,6 +64,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
         AddRat();
         AddScrew();
+        AddShit();
     }
 
     public override void Update(GameTime gameTime)
@@ -88,6 +93,15 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
                 screws.Remove(screw);
             }
         }
+        foreach (Shit shit in shits.ToList())
+        {
+            shit.Update(gameTime, MaxHeight, MinHeight);
+            player.CheckCollision(shit);
+            if (shit._isDestroyed)
+            {
+                shits.Remove(shit);
+            }
+        }
         elapsedRatTime += gameTime.ElapsedGameTime;
         if (elapsedRatTime >= ratSpawnCooldown && rats.Count < MaxRats)
         {
@@ -101,6 +115,13 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         {
             AddScrew();
             elapsedScrewTime = TimeSpan.Zero;
+        }
+
+        elapsedShitTime += gameTime.ElapsedGameTime;
+        if (elapsedShitTime >= shitSpawnCooldown && shits.Count < MaxShits)
+        {
+            AddShit();
+            elapsedShitTime = TimeSpan.Zero;
         }
     }
 
@@ -161,6 +182,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         {
             screw.Draw(spriteBatch);
         }
+        foreach (Shit shit in shits)
+        {
+            shit.Draw(spriteBatch);
+        }
 
         spriteBatch.End();
     }
@@ -191,6 +216,19 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         ));
     }
 
+    public void AddShit()
+    {
+        Texture2D shitTexture = _content.Load<Texture2D>("sprites/shit");
+        float scale = (float)random.NextDouble() * 2f + 1;
+        int height = GetRandomHeight();
+        shits.Add(new Shit(
+            shitTexture,
+            new Vector2(SpawnXPositionsEntity, height),
+            new Rectangle(SpawnXPositionsEntity, height, shitTexture.Width, shitTexture.Height),
+            scale
+        ));
+    }
+
     public int GetRandomHeight()
     {
         int randomHeight = random.Next(MaxHeight, MinHeight);
@@ -201,6 +239,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     {
         rats.Clear();
         screws.Clear();
+        shits.Clear();
         SceneManager.Create(game).ChangeScene("GameOverScene");
     }
 }
