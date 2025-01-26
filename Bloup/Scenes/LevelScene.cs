@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 using Bloup.Managers;
 using MonoGame.Extended;
+using Microsoft.Xna.Framework.Media;
 
 namespace Bloup.Scenes;
 
@@ -43,6 +44,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     // Add all resources
     private Texture2D tile;
+    private Song music;
 
     protected float MaxHeight = game.ScreenHeight / 2 - 100;
     protected float MinHeight = game.ScreenHeight / 2 + 100;
@@ -55,6 +57,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public override void LoadContent()
     {
         tile = _content.Load<Texture2D>("asset_tuyeau");
+        music = _content.Load<Song>("bubble");
+        MediaPlayer.Play(music);
+        MediaPlayer.IsRepeating = true;
+
         // Player setup
         Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble");
         int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
@@ -137,16 +143,15 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             AddWave();
             eslapsedWaveTime = TimeSpan.Zero;
         }
-        elapsedShitTime += gameTime.ElapsedGameTime;
 
+        elapsedShitTime += gameTime.ElapsedGameTime;
         if (elapsedShitTime >= shitSpawnCooldown && shits.Count < MaxShits)
         {
             AddShit();
             elapsedShitTime = TimeSpan.Zero;
-
         }
-        elapsedFrameTime += gameTime.GetElapsedSeconds(); // Ajout du temps �coul� � chaque frame
 
+        elapsedFrameTime += gameTime.GetElapsedSeconds(); // Ajout du temps �coul� � chaque frame
         if (elapsedFrameTime >= 0.5f) // V�rifie si une seconde s'est �coul�e
         {
             elapsedFrameTime -= 0.5f; // R�initialise le compteur d'une seconde
@@ -297,6 +302,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     public void GameOver()
     {
+        MediaPlayer.Stop();
+        MediaPlayer.Pause();
         rats.Clear();
         screws.Clear();
         shits.Clear();
