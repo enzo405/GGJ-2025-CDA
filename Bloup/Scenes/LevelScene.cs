@@ -21,8 +21,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public List<Screw> screws = new();
 
     // Cooldown settings
-    private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(2);
-    private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(3);
+    private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(1);
+    private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(2);
     private TimeSpan elapsedRatTime = TimeSpan.Zero;
     private TimeSpan elapsedScrewTime = TimeSpan.Zero;
 
@@ -180,7 +180,6 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public int GetRandomHeight()
     {
         int randomHeight = random.Next(MaxHeight, MinHeight);
-        Debug.WriteLine($"MaxHeight: {MaxHeight}, MinHeight: {MinHeight}, RandomHeight: {randomHeight}");
         return randomHeight;
     }
 }

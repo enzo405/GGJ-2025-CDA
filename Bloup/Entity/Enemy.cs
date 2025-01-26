@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -23,7 +24,21 @@ namespace Bloup.Entity
 
             base.Update(gameTime, maxHeight, minHeight);
 
-            _position.X -= _speedX;
+            float timeModifiedSpeedX = gameTime.TotalGameTime.TotalSeconds switch
+            {
+                <= 10 => _speedX * 1f,
+                <= 20 => _speedX * 1.2f,
+                <= 30 => _speedX * 1.4f,
+                <= 40 => _speedX * 1.6f,
+                <= 50 => _speedX * 1.8f,
+                <= 60 => _speedX * 2f,
+                <= 70 => _speedX * 3f,
+                <= 80 => _speedX * 5f,
+                <= 90 => _speedX * 10f,
+                _ => _speedX * 100f // Impossible mode
+            };
+
+            _position.X -= timeModifiedSpeedX;
 
             _rectangle.X = (int)_position.X;
 
