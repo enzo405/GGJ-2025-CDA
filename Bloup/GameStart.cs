@@ -41,7 +41,6 @@ namespace Bloup
 
             _graphics.ApplyChanges();
 
-            Debug.WriteLine($"Résolution en plein écran : {ScreenWidth}x{ScreenHeight}");
             base.Initialize();
         }
 
@@ -77,6 +76,7 @@ namespace Bloup
             {
                 currentScene.Draw(gameTime, _spriteBatch);
                 _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+                _spriteBatch.DrawString(font, gameTime.TotalGameTime.ToString(), new Vector2(10, 10), Color.White);
                 _spriteBatch.End();
             }
 

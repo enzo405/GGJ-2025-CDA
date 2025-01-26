@@ -2,10 +2,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Bloup.Core;
 using Bloup.Entity;
+using System;
+using Bloup.Core;
+using Bloup.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Diagnostics;
 
 namespace Bloup.Scenes;
@@ -34,12 +36,17 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     private Texture2D background;
     private Texture2D square_yellow;
     private Texture2D square_red;
+    private Texture2D tile;
+
+    private int tilePoint = 0;
+
     protected int MaxHeight;
     protected int MinHeight;
     protected int SpawnXPositionsEntity = (int)(game.ScreenWidth * 1.05f); // Spawn off screen
 
     public override void LoadContent()
     {
+        tile = _content.Load<Texture2D>("asset_tuyeau");
         square_yellow = _content.Load<Texture2D>("backgrounds/yellow_square");
         square_red = _content.Load<Texture2D>("backgrounds/red_square");
         background = _content.Load<Texture2D>("backgrounds/Menu");
@@ -60,6 +67,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         AddRat();
         AddScrew();
     }
+
 
     public override void Update(GameTime gameTime)
     {
@@ -106,37 +114,46 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     {
         int numberOfTilesX = 24;
         int numberOfTilesY = 10;
+        int tileSize = 32;
 
-        spriteBatch.Begin();
-        int tileSize;
+        TileExtractorService tileExtractorService = new(game.GraphicsDevice);
+        List<Texture2D> tiles = tileExtractorService.ExtractTiles(tile, tileSize, tileSize);
+        MapLoader mapLoader = new();
+
+        Debug.WriteLine(game.Content.RootDirectory);
+        mapLoader.LoadMap("/tiles/tuyeau_set_bg.csv");
+
+        // mapLoader
+
+        int width;
         int wMax = (int)Math.Floor((double)game.ScreenWidth / numberOfTilesX);
         int hMax = (int)Math.Floor((double)game.ScreenHeight / numberOfTilesY);
-        tileSize = Math.Min(wMax, hMax);
+        width = wMax > hMax ? hMax : wMax;
 
-        int xPosStart = (game.ScreenWidth - (tileSize * numberOfTilesX)) / 2;
-        int yPosStart = (game.ScreenHeight - (tileSize * numberOfTilesY)) / 2;
+        int xPosStart = (game.ScreenWidth - (width * numberOfTilesX)) / 2;
+        int yPosStart = (game.ScreenHeight - (width * numberOfTilesY)) / 2;
 
         MaxHeight = yPosStart;
         MinHeight = yPosStart + (numberOfTilesY * tileSize);
 
         for (int y = 0; y < numberOfTilesY; y++)
         {
-            int ypos = (tileSize * y) + yPosStart;
+            int ypos = (width * y) + yPosStart;
             for (int x = 0; x < numberOfTilesX; x++)
             {
-                int xpos = (tileSize * x) + xPosStart;
-                if (y % 2 == 0 && x % 2 == 0)
-                {
-                    spriteBatch.Draw(square_red, new Vector2(xpos, ypos), new Rectangle(0, 0, tileSize, tileSize), Color.Black);
-                }
-                else if (y % 2 != 0 && x % 2 != 0)
-                {
-                    spriteBatch.Draw(square_yellow, new Vector2(xpos, ypos), new Rectangle(0, 0, tileSize, tileSize), Color.Black);
-                }
-                else
-                {
-                    spriteBatch.Draw(square_yellow, new Vector2(xpos, ypos), new Rectangle(0, 0, tileSize, tileSize), Color.Azure);
-                }
+                int xpos = (width * x) + xPosStart;
+
+                float scaleX = width / tileSize;
+                Debug.WriteLine($"xpos : {xpos} ypos : {ypos} scaleX : {scaleX} size : {width}");
+                spriteBatch.Draw(texture: tiles[4],
+                    position: new Vector2(xpos, ypos),
+                    sourceRectangle: new Rectangle(0, 0, tileSize, tileSize),
+                    color: Color.Gray,
+                    rotation: 0,
+                    origin: Vector2.One,
+                    scale: new Vector2(scaleX, scaleX),
+                    effects: SpriteEffects.None,
+                    layerDepth: 0f);
             }
         }
 
