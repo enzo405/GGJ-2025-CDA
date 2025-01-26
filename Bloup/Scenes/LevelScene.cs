@@ -89,6 +89,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
                 rats.Remove(rat);
             }
         }
+
         foreach (Screw screw in screws.ToList())
         {
             screw.Update(gameTime, (int)MaxHeight, (int)MinHeight);
@@ -235,12 +236,13 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public void AddScrew()
     {
         Texture2D screwTexture = _content.Load<Texture2D>("sprites/screw");
+
         float scale = (float)random.NextDouble() * 1.5f + 1;
         int height = GetRandomHeight();
         screws.Add(new Screw(
             screwTexture,
             new Vector2(SpawnXPositionsEntity, height),
-            new Rectangle(SpawnXPositionsEntity, height, screwTexture.Width, screwTexture.Height),
+            new Rectangle(7, 8, 23, 24),
             scale
         ));
     }

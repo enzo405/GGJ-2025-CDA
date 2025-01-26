@@ -183,10 +183,8 @@ namespace Bloup.Entity
 
         public void CheckCollision(Enemy entity)
         {
-            if (_position.X < entity._position.X + entity._rectangle.Width &&
-                _position.X + _rectangle.Width > entity._position.X &&
-                _position.Y < entity._position.Y + entity._rectangle.Height &&
-                _position.Y + _rectangle.Height > entity._position.Y)
+            // Check for collision with the enemy
+            if (this.GetPosition().IntersectsWith(entity.GetPosition()))
             {
                 Die();
             }
