@@ -8,13 +8,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Bloup.Scenes;
 
-public class MenuScene(ContentManager content, GraphicsDeviceManager graphics) : SceneBase(content, graphics)
+public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, GameStart game) : SceneBase(content, graphics, game)
 {
     protected override string Name { get; set; } = "MenuScene";
 
     // Add all ressource
 
     private Texture2D background;
+    protected GameStart game;
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
