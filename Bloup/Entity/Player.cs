@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -20,7 +21,7 @@ namespace Bloup.Entity
         protected bool _isDead = false;        // Whether the player is dead
 
         public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale)
-         : base(texture, position, 32, 32, 4, 0.3f, scale, false)
+         : base(texture, position, 32, 0.2f, scale, false)
         {
             _position = position;
             _rectangle = rectangle;
@@ -121,7 +122,7 @@ namespace Bloup.Entity
             Play();
         }
 
-        public bool CheckCollision(Enemy entity)
+        public void CheckCollision(Enemy entity)
         {
             if (_position.X < entity._position.X + entity._rectangle.Width &&
                 _position.X + _rectangle.Width > entity._position.X &&
@@ -129,9 +130,7 @@ namespace Bloup.Entity
                 _position.Y + _rectangle.Height > entity._position.Y)
             {
                 Die();
-                if (IsFinished) return true;
             }
-            return false;
         }
     }
 }

@@ -61,16 +61,17 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     public override void Update(GameTime gameTime)
     {
+        if (player.IsFinished)
+        {
+            GameOver();
+        }
+
         player.Update(gameTime, MaxHeight, MinHeight);
         foreach (Rat rat in rats.ToList())
         {
             rat.Update(gameTime, MaxHeight, MinHeight);
-            bool isPlayerDead = player.CheckCollision(rat);
-            if (isPlayerDead)
-            {
-                GameOver();
-            }
-            else if (rat._isDestroyed)
+            player.CheckCollision(rat);
+            if (rat._isDestroyed)
             {
                 rats.Remove(rat);
             }
@@ -78,12 +79,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         foreach (Screw screw in screws.ToList())
         {
             screw.Update(gameTime, MaxHeight, MinHeight);
-            bool isPlayerDead = player.CheckCollision(screw);
-            if (isPlayerDead)
-            {
-                GameOver();
-            }
-            else if (screw._isDestroyed)
+            player.CheckCollision(screw);
+            if (screw._isDestroyed)
             {
                 screws.Remove(screw);
             }
