@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.InteropServices;
+using System.IO;
 using Bloup.Core;
+using Bloup.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,13 +19,16 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     private Texture2D background;
     private Texture2D square_yellow;
     private Texture2D square_red;
+    private Texture2D tile;
+
+    private int tilePoint = 0;
 
     public override void LoadContent()
     {
         background = this.Content.Load<Texture2D>("backgrounds/Menu");
         square_yellow = this.Content.Load<Texture2D>("backgrounds/yellow_square");
         square_red = this.Content.Load<Texture2D>("backgrounds/red_square");
-
+        tile = this.Content.Load<Texture2D>("asset_tuyeau");
     }
 
     public override void Update(GameTime gameTime)
@@ -34,6 +39,17 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
         spriteBatch.Begin();
+
+        TileExtractorService tileExtractorService = new TileExtractorService(this.game.GraphicsDevice);
+
+        List<Texture2D> tiles = tileExtractorService.ExtractTiles(tile, 32, 32);
+
+        MapLoader mapLoader = new MapLoader();
+        
+        Debug.WriteLine(this.game.Content.RootDirectory);
+        mapLoader.LoadMap("/tiles/tuyeau_set_bg.csv");
+
+        // mapLoader
 
         int width = 0;
         int wMax = (int)Math.Floor((double)this.game.ScreenWidth / 24);
@@ -46,27 +62,27 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         {
             width = wMax;
         }
+
         int xPosStart = (this.game.ScreenWidth - (width * 24)) / 2;
-        int yPosStart = (this.game.ScreenHeight - (width * 10)) / 2; ;
-        Debug.WriteLine($"width : {width} xPosStart : {xPosStart} yPosStart : {yPosStart}");
+        int yPosStart = (this.game.ScreenHeight - (width * 10)) / 2;
         for (int y = 0; y < 10; y++)
         {
             int ypos = (width * y) + yPosStart;
             for (int x = 0; x < 24; x++)
             {
                 int xpos = (width * x) + xPosStart;
-                if (y % 2 == 0 && x % 2 == 0)
-                {
-                    spriteBatch.Draw(square_red, new Vector2(xpos, ypos), new Rectangle(0, 0, width, width), Color.Black);
-                }
-                else if (y % 2 != 0 && x % 2 != 0)
-                {
-                    spriteBatch.Draw(square_yellow, new Vector2(xpos, ypos), new Rectangle(0, 0, width, width), Color.Black);
-                }
-                else
-                {
-                    spriteBatch.Draw(square_yellow, new Vector2(xpos, ypos), new Rectangle(0, 0, width, width), Color.Azure);
-                }
+
+                float scaleX = width / 32f;
+                Debug.WriteLine($"xpos : {xpos} ypos : {ypos} scaleX : {scaleX} size : {width}");
+                spriteBatch.Draw(texture: tiles[4],
+                    position: new Vector2(xpos, ypos),
+                    sourceRectangle: new Rectangle(0, 0, 32, 32),
+                    color: Color.Gray,
+                    rotation: 0,
+                    origin: Vector2.One,
+                    scale: new Vector2(scaleX, scaleX),
+                    effects: SpriteEffects.None,
+                    layerDepth: 0f);
             }
         }
 
