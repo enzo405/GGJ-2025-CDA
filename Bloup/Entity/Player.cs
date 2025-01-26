@@ -26,14 +26,16 @@ namespace Bloup.Entity
         protected float _waterFlowFactor = 0.2f; // Water flow factor
         protected int _maxWidth = 1200;
         protected bool _isDead = false;        // Whether the player is dead
+        protected Texture2D _fish;
 
-        public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale, int maxWidth)
+        public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale, int maxWidth, Texture2D fish)
          : base(texture, position, 32, 0.2f, scale, false)
         {
             _position = position;
             _rectangle = rectangle;
             _scale = scale;
             _maxWidth = maxWidth;
+            _fish = fish;
         }
 
         public override void Update(GameTime gameTime, int maxHeight, int minHeight)
@@ -116,6 +118,14 @@ namespace Bloup.Entity
                 _position.X = _maxWidth - _rectangle.Width;
                 _velocityX = 0;
             }
+        }
+
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(_texture, _position, CurrentFrame, Color.White, 0f, Vector2.Zero, _scale,
+                SpriteEffects.None, 0f);
+            spriteBatch.Draw(_fish, _position, CurrentFrame, Color.White, 0f, Vector2.Zero, _scale,
+                SpriteEffects.None, 0f);
         }
 
         public void Propel()
