@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 using Bloup.Core;
 using Bloup.Entity;
 using Microsoft.Xna.Framework;
@@ -25,6 +24,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     private Texture2D square_red;
     protected int MaxHeight;
     protected int MinHeight;
+    protected int SpawnXPositionsEntity = (int)(game.ScreenWidth * 1.05f); // Spawn off screen
 
     public override void LoadContent()
     {
@@ -44,8 +44,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             scale // Pass the scale factor
         );
 
-        AddRats();
-        AddScrews();
+        AddRat();
+        AddScrew();
     }
 
 
@@ -127,27 +127,33 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         spriteBatch.End();
     }
 
-    public void AddRats()
+    public void AddRat()
     {
         Texture2D enemyRatTexture = _content.Load<Texture2D>("sprites/swimming_rat");
         float scale = 2f; // Change this value to scale your texture
         rats.Add(new Rat(
             enemyRatTexture,
-            new Vector2(700, 100), // SpawnPosition
+            new Vector2(SpawnXPositionsEntity, GetRandomHeight()), // SpawnPosition
             new Rectangle(100, 100, enemyRatTexture.Width, enemyRatTexture.Height),// Hitbox using original size
             scale // Pass the scale factor
         ));
     }
 
-    public void AddScrews()
+    public void AddScrew()
     {
         Texture2D screwTexture = _content.Load<Texture2D>("sprites/screw");
         float scale = 2f; // Change this value to scale your texture
         screws.Add(new Screw(
             screwTexture,
-            new Vector2(700, 100), //SpawnPosition
+            new Vector2(SpawnXPositionsEntity, GetRandomHeight()), //SpawnPosition
             new Rectangle(100, 100, screwTexture.Width, screwTexture.Height),// Hitbox using original size
             scale // Pass the scale factor
         ));
+    }
+
+    public int GetRandomHeight()
+    {
+        Random random = new();
+        return random.Next(MaxHeight, MinHeight);
     }
 }

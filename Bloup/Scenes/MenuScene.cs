@@ -32,10 +32,5 @@ public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, G
 
     public override void Update(GameTime gameTime)
     {
-        if (Keyboard.GetState().IsKeyDown(Keys.A))
-        {
-            // rediger des log
-            Debug.WriteLine("Message de test");
-        }
     }
 }

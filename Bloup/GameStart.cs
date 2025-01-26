@@ -86,6 +86,11 @@ namespace Bloup
 
         public void ChangeCurrentScene(SceneBase scene)
         {
+            if (currentScene.GetName() == scene.GetName())
+            {
+                Debug.WriteLine($"Scene {scene.GetName()} is already the current scene");
+                return;
+            }
             currentScene = scene;
             scene.LoadContent();
         }
