@@ -14,10 +14,16 @@ namespace Bloup.Entity
         protected float _gravity = 0.06f; // Reduced gravity for water
         protected float _propulsionForce = -6f; // Upward force when propelling
         protected float _downwardForce = 6f;   // Downward force when descending
+        protected float _rightForce = 6f;      // Horizontal force when moving right
+        protected float _leftForce = -6f;      // Horizontal force when moving left
         protected float _velocityY = 0f;       // Current vertical velocity
+        protected float _velocityX = 0f;       // Current horizontal velocity
         protected bool _isPropelling = false;  // Whether the player is propelling up
         protected bool _isDescending = false;  // Whether the player is moving down
+        protected bool _isMovingLeft = false;  // Whether the player is moving left
+        protected bool _isMovingRight = false; // Whether the player is moving right
         protected float _dragFactor = 0.94f;    // Drag to simulate water resistance
+        protected float _waterFlowFactor = 0.2f; // Water flow factor
         protected bool _isDead = false;        // Whether the player is dead
 
         public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale)
@@ -48,6 +54,8 @@ namespace Bloup.Entity
             // Check for upward or downward propulsion
             _isPropelling = state.IsKeyDown(Keys.Up);
             _isDescending = state.IsKeyDown(Keys.Down);
+            _isMovingLeft = state.IsKeyDown(Keys.Left);
+            _isMovingRight = state.IsKeyDown(Keys.Right);
 
             // Handle propulsion or descent
             if (_isPropelling)
@@ -58,6 +66,14 @@ namespace Bloup.Entity
             {
                 Descend();
             }
+            else if (_isMovingLeft)
+            {
+                MoveLeft();
+            }
+            else if (_isMovingRight)
+            {
+                MoveRight();
+            }
             else
             {
                 ApplyGravity();
@@ -66,8 +82,12 @@ namespace Bloup.Entity
             // Simulate water resistance to gradually stabilize the velocity
             ApplyDrag();
 
+            // Simualte water flow
+            ApplyWaterFlow();
+
             // Update player position
             _position.Y += _velocityY;
+            _position.X += _velocityX;
 
             // Prevent player from going off-screen (top of the screen)
             if (GetTopPosition() <= maxHeight)
@@ -81,6 +101,18 @@ namespace Bloup.Entity
                 _position.Y = minHeight - _rectangle.Height;
                 _velocityY = 0;
             }
+
+            if (_position.X < 0)
+            {
+                _position.X = 0;
+                _velocityX = 0;
+            }
+
+            if (_position.X + _rectangle.Width > 1920)
+            {
+                _position.X = 1920 - _rectangle.Width;
+                _velocityX = 0;
+            }
         }
 
         public void Propel()
@@ -93,6 +125,16 @@ namespace Bloup.Entity
         {
             // Apply downward force
             _velocityY = Math.Min(_downwardForce, _velocityY + _downwardForce);
+        }
+
+        public void MoveLeft()
+        {
+            _velocityX = Math.Max(_leftForce, _velocityX + _leftForce);
+        }
+
+        public void MoveRight()
+        {
+            _velocityX = Math.Min(_rightForce, _velocityX + _rightForce);
         }
 
         public void ApplyGravity()
@@ -110,6 +152,20 @@ namespace Bloup.Entity
             if (Math.Abs(_velocityY) < 0.01f)
             {
                 _velocityY = 0f;
+            }
+        }
+
+        public void ApplyWaterFlow()
+        {
+            // Simulate water flow to the left
+            _velocityX -= _waterFlowFactor;
+
+            // Apply drag to simulate water resistance
+            _velocityX *= _dragFactor;
+
+            if (Math.Abs(_velocityX) < 0.01f)
+            {
+                _velocityX = 0f;
             }
         }
 
