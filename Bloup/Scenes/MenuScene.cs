@@ -10,7 +10,7 @@ namespace Bloup.Scenes;
 
 public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, GameStart game) : SceneBase(content, graphics, game)
 {
-    protected override string name { get; set; } = "MenuScene";
+    protected override string Name { get; set; } = "MenuScene";
 
     // Add all ressource
 
@@ -27,7 +27,7 @@ public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, G
 
     public override void LoadContent()
     {
-        background = this.Content.Load<Texture2D>("backgrounds/Menu");
+        background = Content.Load<Texture2D>("backgrounds/Menu");
     }
 
     public override void Update(GameTime gameTime)

@@ -6,14 +6,14 @@ namespace Bloup.Core;
 
 public abstract class SceneBase(ContentManager content, GraphicsDeviceManager graphics, GameStart game)
 {
-    protected abstract string name { get; set; }
+    protected abstract string Name { get; set; }
     protected GraphicsDeviceManager Graphics = graphics;
     protected ContentManager Content = content;
     protected GameStart game = game;
 
     public string GetName()
     {
-        return this.name;
+        return Name;
     }
 
     public abstract void LoadContent();
