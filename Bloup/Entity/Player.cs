@@ -24,14 +24,16 @@ namespace Bloup.Entity
         protected bool _isMovingRight = false; // Whether the player is moving right
         protected float _dragFactor = 0.94f;    // Drag to simulate water resistance
         protected float _waterFlowFactor = 0.2f; // Water flow factor
+        protected int _maxWidth = 1200;
         protected bool _isDead = false;        // Whether the player is dead
 
-        public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale)
+        public Player(Texture2D texture, Vector2 position, Rectangle rectangle, float scale, int maxWidth)
          : base(texture, position, 32, 0.2f, scale, false)
         {
             _position = position;
             _rectangle = rectangle;
             _scale = scale;
+            _maxWidth = maxWidth;
         }
 
         public override void Update(GameTime gameTime, int maxHeight, int minHeight)
@@ -66,7 +68,9 @@ namespace Bloup.Entity
             {
                 Descend();
             }
-            else if (_isMovingLeft)
+
+            // Handle horizontal movement
+            if (_isMovingLeft)
             {
                 MoveLeft();
             }
@@ -74,16 +78,15 @@ namespace Bloup.Entity
             {
                 MoveRight();
             }
-            else
-            {
-                ApplyGravity();
-            }
+
+            // Apply gravity
+            ApplyGravity();
+
+            // Simulate water flow
+            ApplyWaterFlow();
 
             // Simulate water resistance to gradually stabilize the velocity
             ApplyDrag();
-
-            // Simualte water flow
-            ApplyWaterFlow();
 
             // Update player position
             _position.Y += _velocityY;
@@ -108,9 +111,9 @@ namespace Bloup.Entity
                 _velocityX = 0;
             }
 
-            if (_position.X + _rectangle.Width > 1920)
+            if (_position.X + _rectangle.Width > _maxWidth)
             {
-                _position.X = 1920 - _rectangle.Width;
+                _position.X = _maxWidth - _rectangle.Width;
                 _velocityX = 0;
             }
         }
