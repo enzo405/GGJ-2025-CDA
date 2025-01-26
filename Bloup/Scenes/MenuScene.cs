@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using Bloup.Core;
 using Bloup.Managers;
 using Microsoft.Xna.Framework;
@@ -14,9 +13,12 @@ public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, G
     protected override string Name { get; set; } = "MenuScene";
 
     // Add all ressource
-    private Texture2D background;
-    private Texture2D startButton;
+    private List<Texture2D> backgrounds;
+    private int currentFrame; // Index of the current frame
+    private float animationTimer; // Timer to control animation
+    private float frameDuration = 0.2f; // Duration of each frame in seconds
 
+    private Texture2D startButton;
     private Rectangle startButtonRect;
     private Rectangle exitButtonRect;
     private Texture2D exitButton;
@@ -34,22 +36,37 @@ public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, G
         rectScaleY = game.ScreenHeight / 2 / 3;
 
         spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-        spriteBatch.Draw(background, new Rectangle(0, 0, game.ScreenWidth, game.ScreenHeight), Color.White);
+        spriteBatch.Draw(backgrounds[currentFrame], new Rectangle(0, 0, game.ScreenWidth, game.ScreenHeight), Color.White);
         spriteBatch.Draw(startButton, new Rectangle(rectScaleX / 2, rectScaleY / 2, startButton.Width * 10, 10 * startButton.Height), startButtonColor);
         spriteBatch.Draw(exitButton, new Rectangle(rectScaleX / 2, rectScaleY / 2 + 250, exitButton.Width * 10, 10 * exitButton.Height), exitButtonColor);
-
         spriteBatch.End();
     }
     public override void LoadContent()
     {
         currentMouseState = Mouse.GetState();
-        background = Content.Load<Texture2D>("backgrounds/menu_bloup");
+        backgrounds =
+        [
+            Content.Load<Texture2D>("backgrounds/menu_bloup"),
+            Content.Load<Texture2D>("backgrounds/bg-menu2"),
+            Content.Load<Texture2D>("backgrounds/bg-menu3"),
+            Content.Load<Texture2D>("backgrounds/bg-menu4")
+        ];
         startButton = Content.Load<Texture2D>("backgrounds/start");
         exitButton = Content.Load<Texture2D>("backgrounds/exit");
+
+        // Initialize animation variables
+        currentFrame = 0;
+        animationTimer = 0f;
     }
 
     public override void Update(GameTime gameTime)
     {
+        animationTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if (animationTimer >= frameDuration)
+        {
+            animationTimer -= frameDuration;
+            currentFrame = (currentFrame + 1) % backgrounds.Count;
+        }
 
         previousMouseState = currentMouseState;
         currentMouseState = Mouse.GetState();
@@ -90,7 +107,7 @@ public class MenuScene(ContentManager content, GraphicsDeviceManager graphics, G
         {
             SceneManager.Create(game).ChangeScene("LevelScene");
         }
-        Console.WriteLine(IsMouseClicked());
+
         if (IsMouseClicked() && exitButtonRect.Contains(currentMouseState.Position))
         {
             game.Exit();

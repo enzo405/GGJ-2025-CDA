@@ -3,15 +3,14 @@ using System.Linq;
 using Bloup.Core;
 using Bloup.Entity;
 using System;
-using System.Diagnostics;
 using Bloup.Services;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
-using System.Threading;
 using Bloup.Managers;
 using MonoGame.Extended;
+using Microsoft.Xna.Framework.Media;
 
 namespace Bloup.Scenes;
 
@@ -21,26 +20,32 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     private readonly ContentManager _content = content;
     private readonly Random random = new();
     protected override string Name { get; set; } = "LevelScene";
+    protected TimeSpan Timer { get; set; } = TimeSpan.Zero;
     public Player player;
     public List<Rat> rats = [];
     public List<Screw> screws = [];
+    public List<Wave> waves = [];
     public List<Shit> shits = [];
 
     // Cooldown settings
-    private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(1);
-    private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(2);
+    private TimeSpan ratSpawnCooldown = TimeSpan.FromSeconds(3);
+    private TimeSpan screwSpawnCooldown = TimeSpan.FromSeconds(3);
+    private TimeSpan waveSpawnCooldown = TimeSpan.FromSeconds(1);
     private TimeSpan shitSpawnCooldown = TimeSpan.FromSeconds(3);
     private TimeSpan elapsedRatTime = TimeSpan.Zero;
     private TimeSpan elapsedScrewTime = TimeSpan.Zero;
+    private TimeSpan eslapsedWaveTime = TimeSpan.Zero;
     private TimeSpan elapsedShitTime = TimeSpan.Zero;
 
     // Spawn limits
     private const int MaxRats = 5;
     private const int MaxScrews = 3;
+    private const int MaxWaves = 12;
     private const int MaxShits = 3;
 
     // Add all resources
     private Texture2D tile;
+    private Song music;
 
     protected float MaxHeight = game.ScreenHeight / 2 - 100;
     protected float MinHeight = game.ScreenHeight / 2 + 100;
@@ -49,10 +54,16 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     protected int pointeur = 0;
     protected float elapsedFrameTime;
+    private SpriteFont font;
 
     public override void LoadContent()
     {
         tile = _content.Load<Texture2D>("asset_tuyeau");
+        music = _content.Load<Song>("bubble");
+        font = Content.Load<SpriteFont>("fonts/Font");
+        MediaPlayer.Play(music);
+        MediaPlayer.IsRepeating = true;
+
         // Player setup
         Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble-animation");
         int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
@@ -69,6 +80,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
         AddRat();
         AddScrew();
+        AddWave();
         AddShit();
     }
 
@@ -79,6 +91,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             GameOver();
         }
 
+        Timer += gameTime.ElapsedGameTime;
         player.Update(gameTime, (int)MaxHeight, (int)MinHeight);
         foreach (Rat rat in rats.ToList())
         {
@@ -98,6 +111,11 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
                 screws.Remove(screw);
             }
         }
+        foreach (Wave wave in waves.ToList())
+        {
+            wave.Update(gameTime, (int)MaxHeight, (int)MinHeight);
+        }
+
         foreach (Shit shit in shits.ToList())
         {
             shit.Update(gameTime, (int)MaxHeight, (int)MinHeight);
@@ -122,14 +140,22 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             elapsedScrewTime = TimeSpan.Zero;
         }
 
+        // Handle wave spawning
+        eslapsedWaveTime += gameTime.ElapsedGameTime;
+        if (eslapsedWaveTime >= waveSpawnCooldown && waves.Count < MaxWaves)
+        {
+            AddWave();
+            eslapsedWaveTime = TimeSpan.Zero;
+        }
+
         elapsedShitTime += gameTime.ElapsedGameTime;
         if (elapsedShitTime >= shitSpawnCooldown && shits.Count < MaxShits)
         {
             AddShit();
             elapsedShitTime = TimeSpan.Zero;
         }
-        elapsedFrameTime += gameTime.GetElapsedSeconds(); // Ajout du temps �coul� � chaque frame
 
+        elapsedFrameTime += gameTime.GetElapsedSeconds(); // Ajout du temps �coul� � chaque frame
         if (elapsedFrameTime >= 0.5f) // V�rifie si une seconde s'est �coul�e
         {
             elapsedFrameTime -= 0.5f; // R�initialise le compteur d'une seconde
@@ -203,6 +229,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         }
 
         player.Draw(spriteBatch);
+        spriteBatch.DrawString(font, $"Timer: {Timer.Minutes}:{Timer.Seconds}", new Vector2(10, 10), Color.White);
+
         foreach (Rat rat in rats)
         {
             rat.Draw(spriteBatch);
@@ -210,6 +238,10 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         foreach (Screw screw in screws)
         {
             screw.Draw(spriteBatch);
+        }
+        foreach (Wave wave in waves)
+        {
+            wave.Draw(spriteBatch);
         }
         foreach (Shit shit in shits)
         {
@@ -245,6 +277,18 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         ));
     }
 
+    public void AddWave()
+    {
+        Texture2D waveTexture = _content.Load<Texture2D>("sprites/vagounette");
+        int height = GetRandomHeight();
+        waves.Add(new Wave(
+            waveTexture,
+            new Vector2(SpawnXPositionsEntity, height),
+            new Rectangle(SpawnXPositionsEntity, height, waveTexture.Width, waveTexture.Height),
+            2f
+        ));
+    }
+
     public void AddShit()
     {
         Texture2D shitTexture = _content.Load<Texture2D>("sprites/shit");
@@ -266,6 +310,9 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     public void GameOver()
     {
+        Timer = TimeSpan.Zero;
+        MediaPlayer.Stop();
+        MediaPlayer.Pause();
         rats.Clear();
         screws.Clear();
         shits.Clear();

@@ -13,8 +13,6 @@ namespace Bloup
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private SceneBase currentScene;
-        private SpriteFont font;
-
         public int ScreenWidth = 1920;
         public int ScreenHeight = 1080;
 
@@ -49,7 +47,6 @@ namespace Bloup
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             currentScene.LoadContent();
-            font = Content.Load<SpriteFont>("fonts/Font");
         }
 
         protected override void Update(GameTime gameTime)
@@ -59,11 +56,6 @@ namespace Bloup
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                SceneManager.Create(this).ChangeScene("LevelScene");
-            }
 
             base.Update(gameTime);
         }
@@ -77,7 +69,6 @@ namespace Bloup
             {
                 currentScene.Draw(gameTime, _spriteBatch);
                 _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
-                _spriteBatch.DrawString(font, $"Timer: {gameTime.TotalGameTime.Minutes}:{gameTime.TotalGameTime.Seconds}", new Vector2(10, 10), Color.White);
                 _spriteBatch.End();
             }
 
