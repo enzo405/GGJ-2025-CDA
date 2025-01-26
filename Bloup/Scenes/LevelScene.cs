@@ -135,7 +135,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         int yPosStart = (game.ScreenHeight - (width * numberOfTilesY)) / 2;
 
         MaxHeight = yPosStart;
-        MinHeight = yPosStart + (numberOfTilesY * tileSize);
+        MinHeight = yPosStart + (numberOfTilesY * width);
 
         for (int y = 0; y < numberOfTilesY; y++)
         {
@@ -143,12 +143,13 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             for (int x = 0; x < numberOfTilesX; x++)
             {
                 int xpos = (width * x) + xPosStart;
-
                 float scaleX = width / tileSize;
-                spriteBatch.Draw(texture: tiles[4],
+                int idTitle = mapLoader.TileMap[new Vector2(x, y)];
+
+                spriteBatch.Draw(texture: tiles[idTitle],
                     position: new Vector2(xpos, ypos),
-                    sourceRectangle: new Rectangle(0, 0, tileSize, tileSize),
-                    color: Color.Gray,
+                    sourceRectangle: new Rectangle(0, 0, width, width),
+                    color: Color.White,
                     rotation: 0,
                     origin: Vector2.One,
                     scale: new Vector2(scaleX, scaleX),

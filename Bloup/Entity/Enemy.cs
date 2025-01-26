@@ -27,15 +27,15 @@ namespace Bloup.Entity
             float timeModifiedSpeedX = gameTime.TotalGameTime.TotalSeconds switch
             {
                 <= 10 => _speedX * 1f,
-                <= 20 => _speedX * 1.2f,
-                <= 30 => _speedX * 1.4f,
-                <= 40 => _speedX * 1.6f,
-                <= 50 => _speedX * 1.8f,
-                <= 60 => _speedX * 2f,
-                <= 70 => _speedX * 3f,
-                <= 80 => _speedX * 5f,
-                <= 90 => _speedX * 10f,
-                _ => _speedX * 100f // Impossible mode
+                <= 20 => _speedX * 1.1f,
+                <= 30 => _speedX * 1.2f,
+                <= 40 => _speedX * 1.3f,
+                <= 50 => _speedX * 1.4f,
+                <= 60 => _speedX * 1.5f,
+                <= 70 => _speedX * 1.6f,
+                <= 80 => _speedX * 1.7f,
+                <= 90 => _speedX * 1.8f,
+                _ => _speedX * 2f
             };
 
             _position.X -= timeModifiedSpeedX;
