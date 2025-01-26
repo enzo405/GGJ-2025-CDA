@@ -65,7 +65,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         MediaPlayer.IsRepeating = true;
 
         // Player setup
-        Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble");
+        Texture2D playerTexture = _content.Load<Texture2D>("sprites/bubble-animation");
         int spawnX = (int)(_graphics.PreferredBackBufferWidth / 5f - playerTexture.Width / 2);
         int spawnY = _graphics.PreferredBackBufferHeight / 2 - playerTexture.Height / 2;
         float scale = 2f;

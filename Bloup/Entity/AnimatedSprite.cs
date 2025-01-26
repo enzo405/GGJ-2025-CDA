@@ -30,13 +30,13 @@ namespace Bloup.Entity
             _isPlaying = false;
             _frames = [];
 
-            for (int x = 0; x < texture.Bounds.Width; x += frameSize)
+
+
+            for (int y = 0; y < texture.Bounds.Height; y += frameSize)
             {
-                for (int y = 0; y < texture.Bounds.Height; y += frameSize)
-                {
-                    _frames.Add(new Rectangle(x, y, frameSize, frameSize));
-                }
+                _frames.Add(new Rectangle(0, y, frameSize, frameSize));
             }
+
         }
 
         public void Play()
