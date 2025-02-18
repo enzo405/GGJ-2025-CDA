@@ -24,21 +24,21 @@ namespace Bloup.Entity
 
             base.Update(gameTime, maxHeight, minHeight);
 
-            float timeModifiedSpeedX = gameTime.TotalGameTime.TotalSeconds switch
-            {
-                <= 10 => _speedX * 1f,
-                <= 20 => _speedX * 1.2f,
-                <= 30 => _speedX * 1.4f,
-                <= 40 => _speedX * 1.6f,
-                <= 50 => _speedX * 1.8f,
-                <= 60 => _speedX * 2f,
-                <= 70 => _speedX * 3f,
-                <= 80 => _speedX * 4f,
-                <= 90 => _speedX * 5f,
-                _ => _speedX * 10f
-            };
+            // float timeModifiedSpeedX = gameTime.TotalGameTime.TotalSeconds switch
+            // {
+            //     <= 10 => _speedX * 1f,
+            //     <= 20 => _speedX * 1.2f,
+            //     <= 30 => _speedX * 1.4f,
+            //     <= 40 => _speedX * 1.6f,
+            //     <= 50 => _speedX * 1.8f,
+            //     <= 60 => _speedX * 2f,
+            //     <= 70 => _speedX * 3f,
+            //     <= 80 => _speedX * 4f,
+            //     <= 90 => _speedX * 5f,
+            //     _ => _speedX * 10f
+            // };
 
-            _position.X -= timeModifiedSpeedX;
+            _position.X -= _speedX;
 
             _rectangle.X = (int)_position.X;
 

@@ -45,6 +45,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
 
     // Add all resources
     private Texture2D tile;
+    private Texture2D fish;
     private Song music;
 
     protected float MaxHeight = game.ScreenHeight / 2 - 100;
@@ -61,6 +62,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
         tile = _content.Load<Texture2D>("asset_tuyeau");
         music = _content.Load<Song>("bubble");
         font = Content.Load<SpriteFont>("fonts/Font");
+        fish = Content.Load<Texture2D>("sprites/swimming_fish");
         MediaPlayer.Play(music);
         MediaPlayer.IsRepeating = true;
 
@@ -75,7 +77,8 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
             new Vector2(spawnX, spawnY), // SpawnPosition
             new Rectangle(spawnX, spawnY, playerTexture.Width, playerTexture.Height), // Hitbox using original size
             scale, // Pass the scale factor
-            MaxWidth
+            MaxWidth,
+            fish
         );
 
         AddRat();
@@ -102,6 +105,7 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
                 rats.Remove(rat);
             }
         }
+
         foreach (Screw screw in screws.ToList())
         {
             screw.Update(gameTime, (int)MaxHeight, (int)MinHeight);
@@ -267,12 +271,13 @@ public class LevelScene(ContentManager content, GraphicsDeviceManager graphics, 
     public void AddScrew()
     {
         Texture2D screwTexture = _content.Load<Texture2D>("sprites/screw");
+
         float scale = (float)random.NextDouble() * 1.5f + 1;
         int height = GetRandomHeight();
         screws.Add(new Screw(
             screwTexture,
             new Vector2(SpawnXPositionsEntity, height),
-            new Rectangle(SpawnXPositionsEntity, height, screwTexture.Width, screwTexture.Height),
+            new Rectangle(7, 8, 23, 24),
             scale
         ));
     }

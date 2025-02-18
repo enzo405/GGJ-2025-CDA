@@ -1,6 +1,8 @@
 using System.Diagnostics;
+using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace Bloup.Entity
 {
@@ -20,9 +22,14 @@ namespace Bloup.Entity
             spriteBatch.Draw(_texture, _position, Color.White);
         }
 
+        public RectangleF GetPosition()
+        {
+            return new RectangleF((int) _position.X, (int) _position.Y, (int) (_texture.Width * _scale), _texture.Height * _scale);
+        }
+
         public float GetBottomPosition()
         {
-            return _position.Y + _texture.Height;
+            return _position.Y + _texture.Height * _scale;
         }
 
         public float GetTopPosition()
